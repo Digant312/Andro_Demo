@@ -9,6 +9,7 @@ import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 
 import com.androdemo.CustomToastPackage;
+import com.androdemo.ImageCropperPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,7 +26,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-          new CustomToastPackage()
+          new CustomToastPackage(),
+          new ImageCropperPackage()
       );
     }
 

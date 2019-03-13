@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import ToastExample from './ToastExample';
+import ImageCropper from './ImageCropper';
 
 export default class App extends Component{
   constructor(props){
@@ -16,14 +17,14 @@ export default class App extends Component{
   }
 
   render() {
-    console.log(ToastExample)
+    console.log('ImageCropper', ImageCropper)
     return (
       <View style={styles.container}>        
         <TouchableOpacity onPress={() => this.showToast()}>
           <Text style={styles.instructions}>SHOW TOAST</Text>
         </TouchableOpacity>
         {this.state.showToast ?
-          ToastExample.show(`Welcome to Android World!`, ToastExample.LONG)
+          ToastExample.show(`Welcome to Android World!`, 300)
         : null }
       </View>
     );
