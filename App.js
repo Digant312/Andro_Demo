@@ -8,12 +8,11 @@ export default class App extends Component{
     super(props);
 
     this.state = {
-      showToast: false
     }
   }
 
   showToast = () => {
-    this.setState({ showToast : true })
+    ToastExample.show(`Welcome to Android World!`, 300)
   }
 
   render() {
@@ -23,9 +22,6 @@ export default class App extends Component{
         <TouchableOpacity onPress={() => this.showToast()}>
           <Text style={styles.instructions}>SHOW TOAST</Text>
         </TouchableOpacity>
-        {this.state.showToast ?
-          ToastExample.show(`Welcome to Android World!`, 300)
-        : null }
       </View>
     );
   }
