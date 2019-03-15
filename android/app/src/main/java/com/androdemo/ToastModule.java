@@ -19,6 +19,7 @@ public class ToastModule extends ReactContextBaseJavaModule
 
     private static final String DURATION_SHORT_KEY = "SHORT";
     private static final String DURATION_LONG_KEY = "LONG";
+    public static final int IMAGE_CROP = 1000;
 
     public ToastModule(ReactApplicationContext reactContext)
     {
@@ -43,11 +44,8 @@ public class ToastModule extends ReactContextBaseJavaModule
     @ReactMethod
     public void show(String message, int duration)
     {
-
-        Intent intent= new Intent(getReactApplicationContext(), ImageLoadActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        getReactApplicationContext().startActivity(intent);
+        Intent intent = new Intent(getReactApplicationContext(), ImageLoadActivity.class);
+        getReactApplicationContext().startActivityForResult(intent, IMAGE_CROP, null);
         Toast.makeText(getReactApplicationContext(), message, duration).show();
     }
-
 }

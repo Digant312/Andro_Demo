@@ -1,5 +1,6 @@
 package com.androdemo.cropper;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -8,12 +9,15 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.androdemo.R;
+import com.facebook.react.ReactActivity;
 
 
-public class ImageLoadActivity extends AppCompatActivity
+public class ImageLoadActivity extends ReactActivity
 {
 
     Button btnSelectImage;
+    public static String kKEY = "Key";
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -32,7 +36,10 @@ public class ImageLoadActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                Toast.makeText(ImageLoadActivity.this, "Diglo doffo", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent();
+                intent.putExtra("Key","Path to cropped image");
+                setResult(RESULT_OK,intent);
+                finish();
             }
         });
     }
