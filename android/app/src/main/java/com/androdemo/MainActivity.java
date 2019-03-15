@@ -6,6 +6,10 @@ import android.widget.Toast;
 
 import com.androdemo.cropper.ImageLoadActivity;
 import com.facebook.react.ReactActivity;
+import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.WritableNativeMap;
+
 
 public class MainActivity extends ReactActivity {
 
@@ -30,8 +34,17 @@ public class MainActivity extends ReactActivity {
 
                     if(data!=null){
                         String value = data.getStringExtra(ImageLoadActivity.kKEY);
+                        Promise promise = ToastModule.mPromises.get(requestCode);
 
-                        Toast.makeText(this, value!=null? value : "null value returned", Toast.LENGTH_SHORT).show();
+                        if(promise!=null){
+                            WritableMap result = new WritableNativeMap();
+                            result.putString(ImageLoadActivity.kKEY,value);
+                            promise.resolve(result);
+
+                            Toast.makeText(this, "Returning promise value to JS:- Array Size :- " +ToastModule.mPromises.size() , Toast.LENGTH_SHORT).show();
+                        }
+
+//                        Toast.makeText(this, value!=null? value : "null value returned", Toast.LENGTH_SHORT).show();
                     }
 
                     break;
