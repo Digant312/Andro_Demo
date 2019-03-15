@@ -52,6 +52,7 @@ public class ToastModule extends ReactContextBaseJavaModule
         getReactApplicationContext().startActivityForResult(intent, IMAGE_CROP, null);
 //        Toast.makeText(getReactApplicationContext(), message, duration).show();
 
+//        promise.resolve("Resolved.");
         mPromises.put(IMAGE_CROP,promise);
         if (promise != null)
         {

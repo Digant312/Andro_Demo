@@ -21,11 +21,13 @@ export default class App extends Component {
   async showToastPromise() {
     try {
       console.log("Trying");
-      var data = await ToastExample.show("Hello", 300);
-
-      this.setState = {
-        data: "changed"
-      };
+      ToastExample.show("Hello", 300).then(data => {
+        console.log("Promise done")
+        this.state = {
+          data: data
+        };
+        console.log(this.state.data)
+      });
     } catch (e) {
       this.setState = {
         data: "Error"
