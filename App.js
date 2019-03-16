@@ -4,10 +4,13 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableOpacity
+  TouchableOpacity,
+  Image
 } from "react-native";
 import ToastExample from "./ToastExample";
 import ImageCropper from "./ImageCropper";
+
+const imagePath = require('./error.png');
 
 export default class App extends Component {
   constructor(props) {
@@ -38,7 +41,7 @@ export default class App extends Component {
   }
 
   showToast = () => {
-    ToastExample.show(`Welcome to Android World!`, 300);
+    ToastExample.show(imagePath, 300);
   };
 
   render() {
@@ -47,7 +50,7 @@ export default class App extends Component {
       <View style={styles.container}>
         <TouchableOpacity onPress={() => this.showToastPromise()}>
           <Text style={styles.instructions}>SHOW TOAST</Text>
-
+          <Image source={imagePath}/>
           <Text>{this.state.data}</Text>
         </TouchableOpacity>
       </View>
