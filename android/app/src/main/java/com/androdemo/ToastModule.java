@@ -3,9 +3,11 @@
 package com.androdemo;
 
 import android.content.Intent;
+import android.util.Log;
 import android.util.SparseArray;
 import android.widget.Toast;
 
+import com.androdemo.constants.Constant;
 import com.androdemo.cropper.ImageLoadActivity;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -19,9 +21,9 @@ import java.util.Map;
 public class ToastModule extends ReactContextBaseJavaModule
 {
 
+    public static final int IMAGE_CROP = 1000;
     private static final String DURATION_SHORT_KEY = "SHORT";
     private static final String DURATION_LONG_KEY = "LONG";
-    public static final int IMAGE_CROP = 1000;
     public static SparseArray<Promise> mPromises;
 
     public ToastModule(ReactApplicationContext reactContext)
@@ -48,16 +50,19 @@ public class ToastModule extends ReactContextBaseJavaModule
     @ReactMethod
     public void show(String message, int duration, Promise promise)
     {
-        Intent intent = new Intent(getReactApplicationContext(), ImageLoadActivity.class);
-        getReactApplicationContext().startActivityForResult(intent, IMAGE_CROP, null);
-//        Toast.makeText(getReactApplicationContext(), message, duration).show();
+        Log.d("ImagePath", message);
 
-//        promise.resolve("Resolved.");
-        mPromises.put(IMAGE_CROP,promise);
+        Intent intent = new Intent(getReactApplicationContext(), ImageLoadActivity.class);
+        intent.putExtra(Constant.kIMAGE_PATH, message);
+        getReactApplicationContext().startActivityForResult(intent, IMAGE_CROP, null);
+
+        mPromises.put(IMAGE_CROP, promise);
         if (promise != null)
         {
             Toast.makeText(getReactApplicationContext(), "Promise is not empty.", Toast.LENGTH_SHORT).show();
-        }else{
+        }
+        else
+        {
             Toast.makeText(getReactApplicationContext(), "Promise is null.", Toast.LENGTH_SHORT).show();
         }
     }

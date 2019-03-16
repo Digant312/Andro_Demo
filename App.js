@@ -9,27 +9,29 @@ import {
 } from "react-native";
 import ToastExample from "./ToastExample";
 import ImageCropper from "./ImageCropper";
+import ImagePicker from "react-native-image-picker";
 
-const imagePath = require('./error.png');
+const imagePath = require("./error.png");
 
 export default class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      data: "Hello"
+      data: "Hello",
+      imagePath: ""
     };
   }
 
-  async showToastPromise() {
+  async showToastPromise(uri) {
     try {
-      console.log("Trying");
-      ToastExample.show("Hello", 300).then(data => {
-        console.log("Promise done")
+      console.log(imagePath);
+      ToastExample.show(uri, 300).then(data => {
+        console.log("Promise done");
         this.state = {
           data: data
         };
-        console.log(this.state.data)
+        console.log(this.state.data);
       });
     } catch (e) {
       this.setState = {
@@ -38,6 +40,44 @@ export default class App extends Component {
 
       console.error(e);
     }
+  }
+
+  selectPhotoTapped() {
+    const options = {
+      quality: 1.0,
+      maxWidth: 500,
+      maxHeight: 500,
+      storageOptions: {
+        skipBackup: true
+      }
+    };
+
+    ImagePicker.showImagePicker(options, response => {
+      console.log("Response = ", response);
+
+      if (response.didCancel) {
+        console.log("User cancelled photo picker");
+      } else if (response.error) {
+        console.log("ImagePicker Error: ", response.error);
+      } else if (response.customButton) {
+        console.log("User tapped custom button: ", response.customButton);
+      } else {
+        let source = { uri: response.uri };
+
+        // You can also display the image using data:
+        // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+
+        console.log("----------------")
+        console.log(response.uri)
+        console.log("----------------")
+
+        this.showToastPromise(response.uri)
+
+        this.setState({
+          imagePath: source
+        });
+      }
+    });
   }
 
   showToast = () => {
@@ -50,8 +90,12 @@ export default class App extends Component {
       <View style={styles.container}>
         <TouchableOpacity onPress={() => this.showToastPromise()}>
           <Text style={styles.instructions}>SHOW TOAST</Text>
-          <Image source={imagePath}/>
+          <Image source={imagePath} />
           <Text>{this.state.data}</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => this.selectPhotoTapped()}>
+        <Text style={styles.instructions}>Select Image</Text>
         </TouchableOpacity>
       </View>
     );

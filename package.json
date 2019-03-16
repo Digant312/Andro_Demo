@@ -10,7 +10,8 @@
   "dependencies": {
     "react": "16.8.3",
     "react-native": "0.59.0",
-    "react-native-create-library": "^3.1.2"
+    "react-native-create-library": "^3.1.2",
+    "react-native-image-picker": "^0.28.0"
   },
   "devDependencies": {
     "@babel/core": "7.3.4",
