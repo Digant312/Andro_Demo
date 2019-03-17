@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.PixelCopy;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -60,6 +61,7 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
     private LinearLayout layCropper;
     private String TAG = "ImageLoadActivity";
     private Context mContext;
+    private FrameLayout rootLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -82,6 +84,7 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
         btnDone = findViewById(R.id.btnDone);
         layCropper = findViewById(R.id.layCropper);
         imgViewCropped = findViewById(R.id.imgViewCropped);
+        rootLayout = findViewById(R.id.rootLayout);
 
         profilePicture.setOnTouchListener(this);
 
@@ -153,7 +156,8 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
                          public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource,
                                                         boolean isFirstResource)
                          {
-                             Log.d(TAG, resource.getIntrinsicWidth() + " " + resource.getBounds().height());
+                             Log.d(TAG, "Matrix : " + profilePicture.getMatrix());
+
 
                              /*new Handler().postDelayed(new Runnable()
                              {
@@ -264,10 +268,25 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
             case MotionEvent.ACTION_MOVE:
                 if (mode == DRAG)
                 {
+
+                    float newX = event.getX() - start.x;
+                    float newY = event.getY() - start.y;
+
+                    Log.d("newX",newX+"");
+                    Log.d("newX",(-(view.getWidth() / 2)+""));
+
+                    if (newX < -(view.getWidth() / 2))
+                    {
+                        newX = -(view.getWidth() / 2);
+                    }
+                    else if (newX > rootLayout.getWidth() - (view.getWidth() / 2))
+                    {
+                        newX = rootLayout.getWidth() - (view.getWidth() / 2);
+                    }
+
                     // ...
                     matrix.set(savedMatrix);
-                    matrix.postTranslate(event.getX() - start.x, event.getY()
-                                                                 - start.y);
+                    matrix.postTranslate(newX, newY);
                 }
                 else if (mode == ZOOM)
                 {

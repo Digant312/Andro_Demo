@@ -20,6 +20,7 @@
             android:layout_height="wrap_content"
             android:text="First, crop your avatar"
             android:textColor="@color/pink"
+            android:fontFamily="@font/custom_font"
             android:textSize="@dimen/_15sdp"
             android:textStyle="bold"/>
 
