@@ -1,11 +1,9 @@
 import React, { Component } from "react";
 import {
-  Platform,
   StyleSheet,
   Text,
   View,
   TouchableOpacity,
-  Image
 } from "react-native";
 import ToastExample from "./ToastExample";
 import ImageCropper from "./ImageCropper";
@@ -67,10 +65,6 @@ export default class App extends Component {
         // You can also display the image using data:
         // let source = { uri: 'data:image/jpeg;base64,' + response.data };
 
-        console.log("----------------")
-        console.log(response.uri)
-        console.log("----------------")
-
         this.showToastPromise(response.uri)
 
         this.setState({
@@ -80,20 +74,9 @@ export default class App extends Component {
     });
   }
 
-  showToast = () => {
-    ToastExample.show(imagePath, 300);
-  };
-
   render() {
-    console.log("ImageCropper", ImageCropper);
     return (
       <View style={styles.container}>
-        <TouchableOpacity onPress={() => this.showToastPromise()}>
-          <Text style={styles.instructions}>SHOW TOAST</Text>
-          <Image source={imagePath} />
-          <Text>{this.state.data}</Text>
-        </TouchableOpacity>
-
         <TouchableOpacity onPress={() => this.selectPhotoTapped()}>
         <Text style={styles.instructions}>Select Image</Text>
         </TouchableOpacity>
@@ -112,6 +95,7 @@ const styles = StyleSheet.create({
   instructions: {
     textAlign: "center",
     color: "#333333",
-    marginBottom: 5
+    marginBottom: 5,
+    fontFamily: 'Bogle-Bold'
   }
 });
