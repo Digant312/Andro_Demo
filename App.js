@@ -47,7 +47,11 @@ export default class App extends Component {
       maxHeight: 500,
       storageOptions: {
         skipBackup: true
-      }
+      },
+      mediaType: 'photo',
+      title: '',
+      takePhotoButtonTitle: null,
+      chooseFromLibraryButtonTitle: 'Select Profile Photo',
     };
 
     ImagePicker.showImagePicker(options, response => {
