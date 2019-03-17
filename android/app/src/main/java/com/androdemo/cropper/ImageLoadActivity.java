@@ -21,7 +21,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.PixelCopy;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -54,6 +53,10 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
     PointF mid = new PointF();
     float oldDist = 1f;
     String savedItemClicked;
+    float matrixX = 0; // X coordinate of matrix inside the ImageView
+    float matrixY = 0; // Y coordinate of matrix inside the ImageView
+    float width = 0; // width of drawable
+    float height = 0; // height of drawable
     private String imagePath = "";
     private ImageView profilePicture, overlapView, imgViewCropped;
     private AppCompatSeekBar seekZoomController;
@@ -61,7 +64,13 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
     private LinearLayout layCropper;
     private String TAG = "ImageLoadActivity";
     private Context mContext;
-    private FrameLayout rootLayout;
+    private float dx; // postTranslate X distance
+    private float dy; // postTranslate Y distance
+    private float old_dx = 0; // postTranslate X distance
+    private float old_dy = 0; // postTranslate Y distance
+    private boolean valueSet = false;
+    private float[] matrixValues = new float[9];
+    private float[] matrixTest = new float[9];
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -84,7 +93,6 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
         btnDone = findViewById(R.id.btnDone);
         layCropper = findViewById(R.id.layCropper);
         imgViewCropped = findViewById(R.id.imgViewCropped);
-        rootLayout = findViewById(R.id.rootLayout);
 
         profilePicture.setOnTouchListener(this);
 
@@ -158,18 +166,19 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
                          {
                              Log.d(TAG, "Matrix : " + profilePicture.getMatrix());
 
-
-                             /*new Handler().postDelayed(new Runnable()
+                             new Handler().postDelayed(new Runnable()
                              {
                                  @Override
                                  public void run()
                                  {
-                                     profilePicture.setScaleX(mContext.getResources().getDimension(R.dimen._10sdp));
-                                     profilePicture.setScaleY(mContext.getResources().getDimension(R.dimen._10sdp));
-                                     Log.d(TAG + "X", profilePicture.getScaleX() + " " + mContext.getResources().getDimension(R.dimen._100sdp));
-                                     Log.d(TAG + "Y", profilePicture.getScaleY() + " " + mContext.getResources().getDimension(R.dimen._100sdp));
+                                     float defaultValue = 0.2f;
+
+                                     matrix.setScale(defaultValue, defaultValue,
+                                                     ((overlapView.getWidth() / 2) - (defaultValue * profilePicture.getWidth())),
+                                                     ((overlapView.getHeight() / 2) - (defaultValue * profilePicture.getHeight())) - 100);
+                                     profilePicture.setImageMatrix(matrix);
                                  }
-                             }, 500);*/
+                             }, 200);
 
                              return false;
                          }
@@ -269,40 +278,114 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
                 if (mode == DRAG)
                 {
 
-                    float newX = event.getX() - start.x;
-                    float newY = event.getY() - start.y;
-
-                    Log.d("newX",newX+"");
-                    Log.d("newX",(-(view.getWidth() / 2)+""));
-
-                    if (newX < -(view.getWidth() / 2))
-                    {
-                        newX = -(view.getWidth() / 2);
-                    }
-                    else if (newX > rootLayout.getWidth() - (view.getWidth() / 2))
-                    {
-                        newX = rootLayout.getWidth() - (view.getWidth() / 2);
-                    }
-
-                    // ...
+                    //Customized logic with boundaries.
                     matrix.set(savedMatrix);
-                    matrix.postTranslate(newX, newY);
+
+                    matrix.getValues(matrixValues);
+                    matrixX = matrixValues[2];
+                    matrixY = matrixValues[5];
+                    width = matrixValues[0] * (((ImageView) view).getDrawable()
+                                                                 .getIntrinsicWidth());
+                    height = matrixValues[4] * (((ImageView) view).getDrawable()
+                                                                  .getIntrinsicHeight());
+
+                    dx = event.getX() - start.x;
+                    dy = event.getY() - start.y;
+
+                    if (!valueSet)
+                    {
+                        old_dx = dx;
+                        old_dy = dy;
+                        valueSet = !valueSet;
+                    }
+
+
+                    if(dx - old_dx >0 ){
+                        Log.e("DirectionSide","Right");
+                    }
+                    if(dx - old_dx <0 ){
+                        Log.e("DirectionSide","Left");
+                    }
+
+                    if(dy - old_dy >0 ){
+                        Log.e("Direction","Down");
+                    }
+                    if(dy - old_dy <0 ){
+                        Log.e("Direction","Up");
+                    }
+
+                    //if image will go outside left bound
+                    if (matrixX + dx < 0)
+                    {
+                        dx = -matrixX;
+                    }
+                    //if image will go outside right bound
+                    if (matrixX + dx + width > view.getWidth())
+                    {
+                        dx = view.getWidth() - matrixX - width;
+                    }
+                    //if image will go oustside top bound
+                    if (matrixY + dy < 0)
+                    {
+                        dy = -matrixY;
+                    }
+                    //if image will go outside bottom bound
+                    if (matrixY + dy + height > view.getHeight())
+                    {
+                        dy = view.getHeight() - matrixY - height;
+                    }
+                    matrix.postTranslate(dx, dy);
+
+                    // Original logic without boundaries
+                    /*matrix.set(savedMatrix);
+                    matrix.postTranslate(event.getX() - start.x , event.getY() - start.y);*/
+
                 }
                 else if (mode == ZOOM)
                 {
+
                     float newDist = spacing(event);
+                    Log.d(TAG, "newDist=" + newDist);
+                    if (newDist > 5f)
+                    {
+                        float scale = newDist / oldDist;
+                        matrix.getValues(matrixValues);
+
+                        Log.d("Scale", scale + " SCALE_X" + matrixValues[Matrix.MSCALE_X]);
+
+                        if (matrixValues[Matrix.MSCALE_X] > 0.2
+                            || scale > 1)
+                        {
+                            matrix.set(savedMatrix);
+                            matrix.postScale(scale, scale, mid.x, mid.y);
+                            Log.d("Applied Scale", scale + "Mix X&Y : " + mid.x + " / " + mid.y);
+                        }
+                        else
+                        {
+
+                        }
+                    }
+
+                    //Original logic without scale limit
+                    /*float newDist = spacing(event);
                     Log.d(TAG, "newDist=" + newDist);
                     if (newDist > 10f)
                     {
                         matrix.set(savedMatrix);
                         float scale = newDist / oldDist;
                         matrix.postScale(scale, scale, mid.x, mid.y);
-                    }
+                    }*/
                 }
                 break;
         }
 
         view.setImageMatrix(matrix);
+        view.getImageMatrix().getValues(matrixTest);
+
+        old_dx = dx;
+        old_dy = dy;
+
+        Log.d("YYYY", matrixTest[Matrix.MTRANS_X] + " / " + matrixTest[Matrix.MTRANS_Y]);
         return true;
     }
 
