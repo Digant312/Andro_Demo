@@ -4,6 +4,7 @@ import {
   Text,
   View,
   TouchableOpacity,
+  Image
 } from "react-native";
 import ToastExample from "./ToastExample";
 import ImageCropper from "./ImageCropper";
@@ -17,7 +18,8 @@ export default class App extends Component {
 
     this.state = {
       data: "Hello",
-      imagePath: ""
+      imagePath: "",
+      base64Image:""
     };
   }
 
@@ -27,9 +29,9 @@ export default class App extends Component {
       ToastExample.show(uri, 300).then(data => {
         console.log("Promise done");
         this.state = {
-          data: data
+          base64Image: data
         };
-        console.log(this.state.data);
+        console.log(data);
       });
     } catch (e) {
       this.setState = {
@@ -84,6 +86,9 @@ export default class App extends Component {
         <TouchableOpacity onPress={() => this.selectPhotoTapped()}>
         <Text style={styles.instructions}>Select Image</Text>
         </TouchableOpacity>
+
+      <Image source={{uri: `data:image/gif;base64,${this.state.base64Image}`}}/>
+
       </View>
     );
   }

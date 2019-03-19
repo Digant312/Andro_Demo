@@ -40,17 +40,15 @@ public class MainActivity extends ReactActivity
 
                     if (data != null)
                     {
-                        String value = data.getStringExtra(Constant.kKEY);
                         Promise promise = ToastModule.mPromises.get(requestCode);
 
                         if (promise != null)
                         {
                             WritableMap result = new WritableNativeMap();
-                            result.putString(Constant.kKEY, value);
+                            result.putString(Constant.kKEY, data.getStringExtra(Constant.kKEY));
+                            result.putString(Constant.kBase64Image, data.getStringExtra(Constant.kBase64Image));
                             promise.resolve(result);
 
-                            Toast.makeText(this, "Returning promise value to JS:- Array Size :- " + ToastModule.mPromises.size(), Toast.LENGTH_SHORT)
-                                 .show();
                         }
                     }
 

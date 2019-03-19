@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatSeekBar;
 import android.support.v7.widget.CardView;
+import android.util.Base64;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.PixelCopy;
@@ -34,6 +35,8 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.facebook.react.ReactActivity;
+
+import java.io.ByteArrayOutputStream;
 
 
 public class ImageLoadActivity extends ReactActivity implements View.OnTouchListener
@@ -61,7 +64,7 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
     float currentZoom = 0.2f;
 
     private String imagePath = "";
-    private ImageView profilePicture, overlapView, imgViewCropped, imgRef;
+    private ImageView profilePicture, overlapView, imgViewCropped;
     private AppCompatSeekBar seekZoomController;
     private CardView btnCancel, btnDone;
     private LinearLayout layCropper;
@@ -76,7 +79,7 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
     private boolean valueSet = false;
     private float[] matrixValues = new float[9];
     private float[] matrixTest = new float[9];
-
+    private Bitmap croppedBitmap=null;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
@@ -98,7 +101,7 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
         btnDone = findViewById(R.id.btnDone);
         layCropper = findViewById(R.id.layCropper);
         imgViewCropped = findViewById(R.id.imgViewCropped);
-        imgRef = findViewById(R.id.imgRef);
+        //        imgRef = findViewById(R.id.imgRef);
 
         profilePicture.setOnTouchListener(this);
 
@@ -116,8 +119,16 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
             @Override
             public void onClick(View v)
             {
+                String resultBitmap;
+                if(croppedBitmap!=null){
+                     resultBitmap = getBase64ArrayFromBitmap(croppedBitmap);
+                }else{
+                    resultBitmap = "null";
+                }
                 Intent intent = new Intent();
                 intent.putExtra(Constant.kKEY, imagePath);
+                intent.putExtra(Constant.kBase64Image,resultBitmap);
+
                 setResult(RESULT_OK, intent);
                 finish();
             }
@@ -243,8 +254,9 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
             bitmap = layCropper.getDrawingCache();
         }
 
+        croppedBitmap = getclip(bitmap);
         Glide.with(this)
-             .load(getclip(bitmap))
+             .load(croppedBitmap)
              .into(imgViewCropped);
     }
 
@@ -271,6 +283,15 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(bitmap, rect, rect, paint);
         return output;
+    }
+
+    private String getBase64ArrayFromBitmap(Bitmap bitmap)
+    {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream.toByteArray();
+        String encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
+        return encoded;
     }
 
     @Override
@@ -431,10 +452,10 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
         old_dy = dy;
 
         int[] position = getBitmapOffset(view, false);
-        int[] positionCropper = getBitmapOffset(imgRef, false);
+        //        int[] positionCropper = getBitmapOffset(imgRef, false);
 
         Log.d("YYYY", position[0] + "/ " + position[1]);
-        Log.d("YYYYY", positionCropper[0] + "/ " + positionCropper[1]);
+        //        Log.d("YYYYY", positionCropper[0] + "/ " + positionCropper[1]);
         return true;
     }
 
