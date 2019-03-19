@@ -25,20 +25,18 @@ export default class App extends Component {
 
   async showToastPromise(uri) {
     try {
-      console.log(imagePath);
       ToastExample.show(uri, 300).then(data => {
-        console.log("Promise done");
-        this.state = {
-          base64Image: data
-        };
-        console.log(data);
+        console.log("Promise done", data);
+        this.setState({
+          base64Image: data.Key
+        });
       });
     } catch (e) {
       this.setState = {
         data: "Error"
       };
 
-      console.error(e);
+      console.error('error: ',e);
     }
   }
 
@@ -57,7 +55,6 @@ export default class App extends Component {
     };
 
     ImagePicker.showImagePicker(options, response => {
-      console.log("Response = ", response);
 
       if (response.didCancel) {
         console.log("User cancelled photo picker");
@@ -81,13 +78,15 @@ export default class App extends Component {
   }
 
   render() {
+    console.log('this.state.base64Image', this.state.base64Image)
     return (
       <View style={styles.container}>
         <TouchableOpacity onPress={() => this.selectPhotoTapped()}>
         <Text style={styles.instructions}>Select Image</Text>
         </TouchableOpacity>
 
-      <Image source={{uri: `data:image/gif;base64,${this.state.base64Image}`}}/>
+        <Image source={{ isStatic:true, uri: this.state.base64Image }} style={{width: 150, height: 150}}/>
+        <Image source={imagePath}/>
 
       </View>
     );
