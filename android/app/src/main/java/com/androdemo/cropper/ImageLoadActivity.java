@@ -143,8 +143,8 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
                     else
                     {
                         matrix.setScale(scale, scale,
-                                         ((overlapView.getWidth() / 2) - (defaultValue * profilePicture.getWidth())),
-                                         ((overlapView.getHeight() / 2) - (defaultValue * profilePicture.getHeight())) - 100);
+                                        ((overlapView.getWidth() / 2) - (defaultValue * profilePicture.getWidth())),
+                                        ((overlapView.getHeight() / 2) - (defaultValue * profilePicture.getHeight())) - 100);
                     }
 
                     profilePicture.setImageMatrix(matrix);
@@ -391,21 +391,24 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
                     if (newDist > 5f)
                     {
                         float scale = newDist / oldDist;
-                        currentZoom = scale;
-
-                        matrix.getValues(matrixValues);
-
-                        Log.d("Scale", scale + " SCALE_X" + matrixValues[Matrix.MSCALE_X]);
-
-                        if (matrixValues[Matrix.MSCALE_X] > 0.2
-                            || scale > 1)
+                        if (scale <= 2.2)
                         {
-                            matrix.set(savedMatrix);
-                            matrix.postScale(scale, scale, mid.x, mid.y);
-                            Log.d("Applied Scale", scale + "Mix X&Y : " + mid.x + " / " + mid.y);
-                        }
+                            currentZoom = scale;
 
-                        getProgressFromScaleValue(scale);
+                            matrix.getValues(matrixValues);
+
+                            Log.d("Scale", scale + " SCALE_X" + matrixValues[Matrix.MSCALE_X]);
+
+                            if (matrixValues[Matrix.MSCALE_X] > 0.2
+                                || scale > 1)
+                            {
+                                matrix.set(savedMatrix);
+                                matrix.postScale(scale, scale, mid.x, mid.y);
+                                Log.d("Applied Scale", scale + "Mix X&Y : " + mid.x + " / " + mid.y);
+                            }
+
+                            getProgressFromScaleValue(scale);
+                        }
                     }
 
                     //Original logic without scale limit
