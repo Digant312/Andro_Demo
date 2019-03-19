@@ -138,11 +138,12 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
                     if (mid.x > 0)
                     {
 
-                        matrix.postScale(scale, scale, mid.x, mid.y);
+                        matrix.setScale(scale, scale, mid.x, mid.y);
                     }
                     else
                     {
-                        matrix.postScale(scale, scale, ((overlapView.getWidth() / 2) - (defaultValue * profilePicture.getWidth())),
+                        matrix.setScale(scale, scale,
+                                         ((overlapView.getWidth() / 2) - (defaultValue * profilePicture.getWidth())),
                                          ((overlapView.getHeight() / 2) - (defaultValue * profilePicture.getHeight())) - 100);
                     }
 
@@ -485,6 +486,7 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
     {
         int progressValue = Math.round((50 * scaleValue) - 10);
         Log.e("Progress", progressValue + "");
+        seekZoomController.setProgress(progressValue);
         return progressValue;
     }
 
