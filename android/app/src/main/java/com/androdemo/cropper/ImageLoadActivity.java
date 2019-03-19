@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.PixelCopy;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -57,8 +58,10 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
     float matrixY = 0; // Y coordinate of matrix inside the ImageView
     float width = 0; // width of drawable
     float height = 0; // height of drawable
+    float currentZoom = 0.2f;
+
     private String imagePath = "";
-    private ImageView profilePicture, overlapView, imgViewCropped;
+    private ImageView profilePicture, overlapView, imgViewCropped, imgRef;
     private AppCompatSeekBar seekZoomController;
     private CardView btnCancel, btnDone;
     private LinearLayout layCropper;
@@ -68,6 +71,8 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
     private float dy; // postTranslate Y distance
     private float old_dx = 0; // postTranslate X distance
     private float old_dy = 0; // postTranslate Y distance
+    private float defaultValue = 0.2f;
+
     private boolean valueSet = false;
     private float[] matrixValues = new float[9];
     private float[] matrixTest = new float[9];
@@ -93,6 +98,7 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
         btnDone = findViewById(R.id.btnDone);
         layCropper = findViewById(R.id.layCropper);
         imgViewCropped = findViewById(R.id.imgViewCropped);
+        imgRef = findViewById(R.id.imgRef);
 
         profilePicture.setOnTouchListener(this);
 
@@ -116,14 +122,32 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
                 finish();
             }
         });
+
         seekZoomController.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
         {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
             {
-                float scale = ((progress / 10.0f) + 1);
+                /*float scale = ((progress / 10.0f) + 1);
                 profilePicture.setScaleX(scale);
-                profilePicture.setScaleY(scale);
+                profilePicture.setScaleY(scale);*/
+
+                if (fromUser)
+                {
+                    float scale = getScaleFromProgressValue(progress);
+                    if (mid.x > 0)
+                    {
+
+                        matrix.postScale(scale, scale, mid.x, mid.y);
+                    }
+                    else
+                    {
+                        matrix.postScale(scale, scale, ((overlapView.getWidth() / 2) - (defaultValue * profilePicture.getWidth())),
+                                         ((overlapView.getHeight() / 2) - (defaultValue * profilePicture.getHeight())) - 100);
+                    }
+
+                    profilePicture.setImageMatrix(matrix);
+                }
             }
 
             @Override
@@ -171,8 +195,6 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
                                  @Override
                                  public void run()
                                  {
-                                     float defaultValue = 0.2f;
-
                                      matrix.setScale(defaultValue, defaultValue,
                                                      ((overlapView.getWidth() / 2) - (defaultValue * profilePicture.getWidth())),
                                                      ((overlapView.getHeight() / 2) - (defaultValue * profilePicture.getHeight())) - 100);
@@ -223,6 +245,13 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
         Glide.with(this)
              .load(getclip(bitmap))
              .into(imgViewCropped);
+    }
+
+    private float getScaleFromProgressValue(int scaleValue)
+    {
+        float progressValue = ((10f + scaleValue) / 50f);
+        Log.e("Reverse", progressValue + "");
+        return progressValue;
     }
 
     public static Bitmap getclip(Bitmap bitmap)
@@ -278,7 +307,7 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
                 if (mode == DRAG)
                 {
 
-                    //Customized logic with boundaries.
+                    /*//Customized logic with boundaries.
                     matrix.set(savedMatrix);
 
                     matrix.getValues(matrixValues);
@@ -297,21 +326,6 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
                         old_dx = dx;
                         old_dy = dy;
                         valueSet = !valueSet;
-                    }
-
-
-                    if(dx - old_dx >0 ){
-                        Log.e("DirectionSide","Right");
-                    }
-                    if(dx - old_dx <0 ){
-                        Log.e("DirectionSide","Left");
-                    }
-
-                    if(dy - old_dy >0 ){
-                        Log.e("Direction","Down");
-                    }
-                    if(dy - old_dy <0 ){
-                        Log.e("Direction","Up");
                     }
 
                     //if image will go outside left bound
@@ -334,12 +348,39 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
                     {
                         dy = view.getHeight() - matrixY - height;
                     }
-                    matrix.postTranslate(dx, dy);
+
+                    boolean update = false;
+                    //Direction Detection
+                    if (dx - old_dx > 0)
+                    {
+                        update = true;
+                        Log.e("Diff", (matrixX + event.getX()) + "/" + layCropper.getLeft());
+                        Log.e("DirectionSide", "Right");
+                    }
+                    else if (dx - old_dx < 0)
+                    {
+                        update = true;
+                        Log.e("DirectionSide", "Left");
+                    }
+                    else if (dy - old_dy > 0)
+                    {
+                        update = true;
+                        Log.e("Direction", "Down");
+                    }
+                    else if (dy - old_dy < 0)
+                    {
+                        update = true;
+                        Log.e("Direction", "Up");
+                    }
+
+                    if (update)
+                    {
+                        matrix.postTranslate(dx, dy);
+                    }*/
 
                     // Original logic without boundaries
-                    /*matrix.set(savedMatrix);
-                    matrix.postTranslate(event.getX() - start.x , event.getY() - start.y);*/
-
+                    matrix.set(savedMatrix);
+                    matrix.postTranslate(event.getX() - start.x, event.getY() - start.y);
                 }
                 else if (mode == ZOOM)
                 {
@@ -349,6 +390,8 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
                     if (newDist > 5f)
                     {
                         float scale = newDist / oldDist;
+                        currentZoom = scale;
+
                         matrix.getValues(matrixValues);
 
                         Log.d("Scale", scale + " SCALE_X" + matrixValues[Matrix.MSCALE_X]);
@@ -360,10 +403,8 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
                             matrix.postScale(scale, scale, mid.x, mid.y);
                             Log.d("Applied Scale", scale + "Mix X&Y : " + mid.x + " / " + mid.y);
                         }
-                        else
-                        {
 
-                        }
+                        getProgressFromScaleValue(scale);
                     }
 
                     //Original logic without scale limit
@@ -385,7 +426,11 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
         old_dx = dx;
         old_dy = dy;
 
-        Log.d("YYYY", matrixTest[Matrix.MTRANS_X] + " / " + matrixTest[Matrix.MTRANS_Y]);
+        int[] position = getBitmapOffset(view, false);
+        int[] positionCropper = getBitmapOffset(imgRef, false);
+
+        Log.d("YYYY", position[0] + "/ " + position[1]);
+        Log.d("YYYYY", positionCropper[0] + "/ " + positionCropper[1]);
         return true;
     }
 
@@ -434,5 +479,58 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
         float x = event.getX(0) + event.getX(1);
         float y = event.getY(0) + event.getY(1);
         point.set(x / 2, y / 2);
+    }
+
+    private int getProgressFromScaleValue(float scaleValue)
+    {
+        int progressValue = Math.round((50 * scaleValue) - 10);
+        Log.e("Progress", progressValue + "");
+        return progressValue;
+    }
+
+    public int[] getBitmapOffset(ImageView img, Boolean includeLayout)
+    {
+        int[] offset = new int[2];
+        float[] values = new float[9];
+
+        Matrix m = img.getImageMatrix();
+        m.getValues(values);
+
+        offset[0] = (int) values[5];
+        offset[1] = (int) values[2];
+
+        if (includeLayout)
+        {
+            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) img.getLayoutParams();
+            int paddingTop = (int) (img.getPaddingTop());
+            int paddingLeft = (int) (img.getPaddingLeft());
+
+            offset[0] += paddingTop + lp.topMargin;
+            offset[1] += paddingLeft + lp.leftMargin;
+        }
+        return offset;
+    }
+
+    public int[] getLayoutOffset(LinearLayout img, Boolean includeLayout)
+    {
+        int[] offset = new int[2];
+        float[] values = new float[9];
+
+        Matrix m = img.getMatrix();
+        m.getValues(values);
+
+        offset[0] = (int) values[5];
+        offset[1] = (int) values[2];
+
+        if (includeLayout)
+        {
+            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) img.getLayoutParams();
+            int paddingTop = (int) (img.getPaddingTop());
+            int paddingLeft = (int) (img.getPaddingLeft());
+
+            offset[0] += paddingTop + lp.topMargin;
+            offset[1] += paddingLeft + lp.leftMargin;
+        }
+        return offset;
     }
 }
