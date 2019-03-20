@@ -63,7 +63,7 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
     float currentZoom = 0.2f;
 
     private String imagePath = "";
-    private ImageView profilePicture, overlapView, imgViewCropped;
+    private ImageView profilePicture, overlapView;
     private AppCompatSeekBar seekZoomController;
     private CardView btnCancel, btnDone;
     private LinearLayout layCropper;
@@ -100,7 +100,7 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
         btnCancel = findViewById(R.id.btnCancel);
         btnDone = findViewById(R.id.btnDone);
         layCropper = findViewById(R.id.layCropper);
-        imgViewCropped = findViewById(R.id.imgViewCropped);
+        // imgViewCropped = findViewById(R.id.imgViewCropped);
         //        imgRef = findViewById(R.id.imgRef);
 
         createDirectory("");
@@ -165,7 +165,7 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
                         matrix.setScale(scale, scale, mid.x, mid.y);
                     }
                     else
-                    {
+                    {   
                         matrix.setScale(scale, scale,
                                         ((overlapView.getWidth() / 2) - (defaultValue * profilePicture.getWidth())),
                                         ((overlapView.getHeight() / 2) - (defaultValue * profilePicture.getHeight())) - 100);
@@ -220,9 +220,11 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
                                  @Override
                                  public void run()
                                  {
+                                     float initial_top_position = (overlapView.getHeight() - (defaultValue * profilePicture.getHeight()) )/2 ;
                                      matrix.setScale(defaultValue, defaultValue,
-                                                     ((overlapView.getWidth() / 2) - (defaultValue * profilePicture.getWidth())),
-                                                     ((overlapView.getHeight() / 2) - (defaultValue * profilePicture.getHeight())) - 100);
+                                                     ((overlapView.getWidth() / 2) - ((defaultValue * profilePicture.getWidth())/2)),
+                                                     initial_top_position);
+                                                     
                                      profilePicture.setImageMatrix(matrix);
                                  }
                              }, 200);
@@ -268,9 +270,9 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
         }
 
         croppedBitmap = getclip(bitmap);
-        Glide.with(this)
-             .load(croppedBitmap)
-             .into(imgViewCropped);
+        // Glide.with(this)
+        //      .load(croppedBitmap)
+        //      .into(imgViewCropped);
     }
 
     private String getBase64ArrayFromBitmap(Bitmap bitmap)

@@ -57,13 +57,13 @@ public class ToastModule extends ReactContextBaseJavaModule
         getReactApplicationContext().startActivityForResult(intent, IMAGE_CROP, null);
 
         mPromises.put(IMAGE_CROP, promise);
-        if (promise != null)
-        {
-            Toast.makeText(getReactApplicationContext(), "Promise is not empty.", Toast.LENGTH_SHORT).show();
-        }
-        else
-        {
-            Toast.makeText(getReactApplicationContext(), "Promise is null.", Toast.LENGTH_SHORT).show();
-        }
+        // if (promise != null)
+        // {
+        //     Toast.makeText(getReactApplicationContext(), "Promise is not empty.", Toast.LENGTH_SHORT).show();
+        // }
+        // else
+        // {
+        //     Toast.makeText(getReactApplicationContext(), "Promise is null.", Toast.LENGTH_SHORT).show();
+        // }
     }
 }

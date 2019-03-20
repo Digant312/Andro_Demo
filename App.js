@@ -84,8 +84,9 @@ export default class App extends Component {
         <TouchableOpacity onPress={() => this.selectPhotoTapped()}>
         <Text style={styles.instructions}>Select Image</Text>
         </TouchableOpacity>
-
+        {this.state.base64Image ?
         <Image source={{ isStatic:true, uri: this.state.base64Image }} style={{width: 150, height: 150}}/>
+        : null}
       </View>
     );
   }
