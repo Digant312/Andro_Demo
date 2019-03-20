@@ -428,7 +428,8 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
                                 Log.d("Applied Scale", scale + "Mix X&Y : " + mid.x + " / " + mid.y);
                             }
 
-                            getProgressFromScaleValue(scale);
+                            matrix.getValues(matrixTest);
+                            getProgressFromScaleValue(matrixTest[Matrix.MSCALE_X]);
                         }
                     }
 
