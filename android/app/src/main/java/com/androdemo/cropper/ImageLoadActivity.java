@@ -110,7 +110,11 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
             @Override
             public void onClick(View v)
             {
-                cropImage();
+                Intent intent = new Intent();
+                intent.putExtra(Constant.kKEY, imagePath);
+
+                setResult(RESULT_CANCELED, intent);
+                finish();
             }
         });
 
@@ -119,6 +123,9 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
             @Override
             public void onClick(View v)
             {
+
+                cropImage();
+
                 String resultBitmap;
                 if(croppedBitmap!=null){
                      resultBitmap = getBase64ArrayFromBitmap(croppedBitmap);
