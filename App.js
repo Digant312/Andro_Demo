@@ -86,8 +86,6 @@ export default class App extends Component {
         </TouchableOpacity>
 
         <Image source={{ isStatic:true, uri: this.state.base64Image }} style={{width: 150, height: 150}}/>
-        <Image source={imagePath}/>
-
       </View>
     );
   }
