@@ -28,7 +28,7 @@ export default class App extends Component {
       ToastExample.show(uri, 300).then(data => {
         console.log("Promise done", data);
         this.setState({
-          base64Image: data.Key
+          base64Image: data.ImageUri
         });
       });
     } catch (e) {

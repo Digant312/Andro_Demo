@@ -47,6 +47,7 @@ public class MainActivity extends ReactActivity
                             WritableMap result = new WritableNativeMap();
                             result.putString(Constant.kKEY, data.getStringExtra(Constant.kKEY));
                             result.putString(Constant.kBase64Image, data.getStringExtra(Constant.kBase64Image));
+                            result.putString(Constant.kImageUri, data.getStringExtra(Constant.kImageUri));
                             promise.resolve(result);
 
                         }

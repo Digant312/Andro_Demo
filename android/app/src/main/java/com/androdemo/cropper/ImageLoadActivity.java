@@ -34,12 +34,11 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.facebook.react.ReactActivity;
 
 import java.io.ByteArrayOutputStream;
 
 
-public class ImageLoadActivity extends ReactActivity implements View.OnTouchListener
+public class ImageLoadActivity extends BaseActivity implements View.OnTouchListener
 {
 
     // We can be in one of these 3 states
@@ -79,7 +78,8 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
     private boolean valueSet = false;
     private float[] matrixValues = new float[9];
     private float[] matrixTest = new float[9];
-    private Bitmap croppedBitmap=null;
+    private Bitmap croppedBitmap = null;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
@@ -103,6 +103,7 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
         imgViewCropped = findViewById(R.id.imgViewCropped);
         //        imgRef = findViewById(R.id.imgRef);
 
+        createDirectory("");
         profilePicture.setOnTouchListener(this);
 
         btnCancel.setOnClickListener(new View.OnClickListener()
@@ -127,14 +128,19 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
                 cropImage();
 
                 String resultBitmap;
-                if(croppedBitmap!=null){
-                     resultBitmap = getBase64ArrayFromBitmap(croppedBitmap);
-                }else{
+                if (croppedBitmap != null)
+                {
+                    resultBitmap = saveBitmapToFile(croppedBitmap).toString();
+//                    resultBitmap = getBase64ArrayFromBitmap(croppedBitmap);
+                }
+                else
+                {
                     resultBitmap = "null";
                 }
                 Intent intent = new Intent();
                 intent.putExtra(Constant.kKEY, imagePath);
-                intent.putExtra(Constant.kBase64Image,resultBitmap);
+//                intent.putExtra(Constant.kBase64Image, resultBitmap);
+                intent.putExtra(Constant.kImageUri, resultBitmap);
 
                 setResult(RESULT_OK, intent);
                 finish();
@@ -267,6 +273,15 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
              .into(imgViewCropped);
     }
 
+    private String getBase64ArrayFromBitmap(Bitmap bitmap)
+    {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream.toByteArray();
+        String encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
+        return encoded;
+    }
+
     private float getScaleFromProgressValue(int scaleValue)
     {
         float progressValue = ((10f + scaleValue) / 50f);
@@ -290,15 +305,6 @@ public class ImageLoadActivity extends ReactActivity implements View.OnTouchList
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(bitmap, rect, rect, paint);
         return output;
-    }
-
-    private String getBase64ArrayFromBitmap(Bitmap bitmap)
-    {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-        byte[] byteArray = byteArrayOutputStream.toByteArray();
-        String encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
-        return encoded;
     }
 
     @Override

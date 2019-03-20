@@ -1,4 +1,6 @@
 apply plugin: "com.android.application"
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 
 import com.android.build.OutputFile
 
@@ -147,6 +149,7 @@ dependencies {
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation 'com.github.bumptech.glide:glide:4.6.1'
     implementation 'com.intuit.sdp:sdp-android:1.0.6'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
 // Run this once to be able to run the application with BUCK
@@ -154,4 +157,7 @@ dependencies {
 task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
     into 'libs'
+}
+repositories {
+    mavenCentral()
 }
