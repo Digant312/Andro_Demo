@@ -165,7 +165,7 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
                         matrix.setScale(scale, scale, mid.x, mid.y);
                     }
                     else
-                    {   
+                    {
                         matrix.setScale(scale, scale,
                                         ((overlapView.getWidth() / 2) - (defaultValue * profilePicture.getWidth())),
                                         ((overlapView.getHeight() / 2) - (defaultValue * profilePicture.getHeight())) - 100);
@@ -220,10 +220,14 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
                                  @Override
                                  public void run()
                                  {
-                                     float initial_top_position = (overlapView.getHeight() - (defaultValue * profilePicture.getHeight()) )/2 ;
+                                     Log.v(TAG, "Initail position >>> : " + profilePicture.getWidth() + "--------" +  overlapView.getWidth() + "--------" +  profilePicture.getHeight() + "--------" +  overlapView.getHeight() );
+//                                     float initial_top_position = (overlapView.getHeight() - (defaultValue * profilePicture.getHeight()) )/2 ;
+//                                     matrix.setScale(defaultValue, defaultValue,
+//                                                     ((overlapView.getWidth() / 2) - ((defaultValue * profilePicture.getWidth())/2)),
+//                                                     initial_top_position);
                                      matrix.setScale(defaultValue, defaultValue,
-                                                     ((overlapView.getWidth() / 2) - ((defaultValue * profilePicture.getWidth())/2)),
-                                                     initial_top_position);
+                                             ((overlapView.getWidth() / 2) - ((defaultValue * profilePicture.getWidth())/2)),
+                                             (75 - ((defaultValue * profilePicture.getHeight())/2)));
                                                      
                                      profilePicture.setImageMatrix(matrix);
                                  }
