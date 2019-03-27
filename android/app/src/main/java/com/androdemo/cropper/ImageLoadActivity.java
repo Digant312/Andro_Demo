@@ -47,6 +47,7 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
     static final int ZOOM = 2;
     // These matrices will be used to move and zoom image
     Matrix matrix = new Matrix();
+    Matrix initialMatrix = null;
     Matrix savedMatrix = new Matrix();
     int mode = NONE;
 
@@ -159,19 +160,24 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
                 if (fromUser)
                 {
                     float scale = getScaleFromProgressValue(progress);
-                    if (mid.x > 0)
-                    {
-
-                        matrix.setScale(scale, scale, mid.x, mid.y);
-                    }
-                    else
-                    {
-                        matrix.setScale(scale, scale,
-                                        ((overlapView.getWidth() / 2) - (defaultValue * profilePicture.getWidth())),
-                                        ((overlapView.getHeight() / 2) - (defaultValue * profilePicture.getHeight())) - 100);
-                    }
+                    matrix.getValues(matrixTest);
+                    matrix.setScale(scale, scale,
+                                    matrixTest[Matrix.MTRANS_X],
+                                    matrixTest[Matrix.MTRANS_Y]);
 
                     profilePicture.setImageMatrix(matrix);
+
+                    matrix.getValues(matrixTest);
+                    float postScaleX = ((overlapView.getWidth()/2) - ((scale*profilePicture.getDrawable().getIntrinsicWidth())/2)) * scale ;
+                    float postScaleY = ((overlapView.getHeight()/2) - ((scale*profilePicture.getDrawable().getIntrinsicHeight())/2)) *scale;
+
+                    matrix.postTranslate(postScaleX,postScaleY);
+                    if(scale == 0.2f){
+                        profilePicture.setImageMatrix(initialMatrix);
+                    }else{
+
+                        profilePicture.setImageMatrix(matrix);
+                    }
                 }
             }
 
@@ -225,11 +231,29 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
 //                                     matrix.setScale(defaultValue, defaultValue,
 //                                                     ((overlapView.getWidth() / 2) - ((defaultValue * profilePicture.getWidth())/2)),
 //                                                     initial_top_position);
-                                     matrix.setScale(defaultValue, defaultValue,
+                                     /*matrix.setScale(defaultValue, defaultValue,
                                              ((overlapView.getWidth() / 2) - ((defaultValue * profilePicture.getWidth())/2)),
                                              (75 - ((defaultValue * profilePicture.getHeight())/2)));
-                                                     
+
+                                     profilePicture.setImageMatrix(matrix);*/
+
+                                     matrix.setScale(defaultValue, defaultValue,
+                                                     (overlapView.getWidth()/2) - ((defaultValue*profilePicture.getDrawable().getIntrinsicWidth())/2),
+                                                     (overlapView.getHeight()/2) - ((defaultValue*profilePicture.getDrawable().getIntrinsicHeight())/2));
+
+
                                      profilePicture.setImageMatrix(matrix);
+                                     matrix.getValues(matrixTest);
+                                     float postScaleX = ((overlapView.getWidth()/2) - ((defaultValue*profilePicture.getDrawable().getIntrinsicWidth())/2)) * defaultValue ;
+                                     float postScaleY = ((overlapView.getHeight()/2) - ((defaultValue*profilePicture.getDrawable().getIntrinsicHeight())/2)) *defaultValue;
+
+
+                                     matrix.postTranslate(postScaleX,postScaleY);
+                                     profilePicture.setImageMatrix(matrix);
+                                     if(initialMatrix== null){
+                                         Matrix matrix = profilePicture.getImageMatrix();
+                                         initialMatrix= matrix;
+                                     }
                                  }
                              }, 200);
 
