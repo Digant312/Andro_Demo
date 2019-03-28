@@ -36,7 +36,7 @@ public class MainActivity extends ReactActivity
         {
             switch (requestCode)
             {
-                case ToastModule.IMAGE_CROP:
+                case Constant.IMAGE_CROP:
 
                     if (data != null)
                     {

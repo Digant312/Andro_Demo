@@ -69,7 +69,6 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
     private CardView btnCancel, btnDone;
     private LinearLayout layCropper;
     private String TAG = "ImageLoadActivity";
-    private Context mContext;
     private float dx; // postTranslate X distance
     private float dy; // postTranslate Y distance
     private float old_dx = 0; // postTranslate X distance
@@ -141,12 +140,12 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
                 // Intent intent = new Intent();
 //                intent.putExtra(Constant.kBase64Image, resultBitmap);
 
-                Intent intent = new Intent(ImageLoadActivity.class, RectCropActivity.class);
+                Intent intent = new Intent(mContext, RectCropActivity.class);
                 // intent.putExtra(Constant.kIMAGE_PATH, message);
                 intent.putExtra(Constant.kKEY, imagePath);
                 intent.putExtra(Constant.kImageUri, resultBitmap);
 
-                ImageLoadActivity.this.startActivityForResult(intent, RECT_CROP, null);
+                startActivityForResult(intent, Constant.RECT_CROP, null);
 
                 // setResult(RESULT_OK, intent);
                 // finish();

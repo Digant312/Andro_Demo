@@ -8,4 +8,7 @@ public interface Constant
     String kImageUri= "ImageUri";
     String docPath = "/sdcard/ImageCropper/";
     String yyyyMMdd_HHmmssSSS = "yyyyMMdd_HHmmssSSS";
+
+    int IMAGE_CROP = 1000;
+    int RECT_CROP = 1001;
 }

@@ -1,7 +1,9 @@
 package com.androdemo.cropper
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Bundle
 import com.androdemo.constants.Constant
 import com.facebook.react.ReactActivity
 import java.io.File
@@ -11,6 +13,12 @@ import java.util.*
 
 abstract class BaseActivity : ReactActivity() {
 
+    lateinit var mContext: Context
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mContext=this
+    }
     fun createDirectory(subDir: String = "") {
         val invoiceDirectory = File(Constant.docPath + subDir)
         if (!invoiceDirectory.exists())

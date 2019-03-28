@@ -18,10 +18,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+
 public class ToastModule extends ReactContextBaseJavaModule
 {
 
-    public static final int IMAGE_CROP = 1000;
     private static final String DURATION_SHORT_KEY = "SHORT";
     private static final String DURATION_LONG_KEY = "LONG";
     public static SparseArray<Promise> mPromises;
@@ -54,9 +54,9 @@ public class ToastModule extends ReactContextBaseJavaModule
 
         Intent intent = new Intent(getReactApplicationContext(), ImageLoadActivity.class);
         intent.putExtra(Constant.kIMAGE_PATH, message);
-        getReactApplicationContext().startActivityForResult(intent, IMAGE_CROP, null);
+        getReactApplicationContext().startActivityForResult(intent, Constant.IMAGE_CROP, null);
 
-        mPromises.put(IMAGE_CROP, promise);
+        mPromises.put(Constant.IMAGE_CROP, promise);
         // if (promise != null)
         // {
         //     Toast.makeText(getReactApplicationContext(), "Promise is not empty.", Toast.LENGTH_SHORT).show();

@@ -3,15 +3,11 @@ package com.androdemo;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.imagepicker.ImagePickerPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
-
-import com.androdemo.CustomToastPackage;
-import com.androdemo.ImageCropperPackage;
-import com.androdemo.RectCropPackage;
+import com.imagepicker.ImagePickerPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,8 +26,7 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage(),
           new ImagePickerPackage(),
           new CustomToastPackage(),
-          new ImageCropperPackage(),
-          new RectCropPackage()
+          new ImageCropperPackage()
       );
     }
 
