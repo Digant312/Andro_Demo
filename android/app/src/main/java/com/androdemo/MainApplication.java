@@ -11,6 +11,7 @@ import com.facebook.soloader.SoLoader;
 
 import com.androdemo.CustomToastPackage;
 import com.androdemo.ImageCropperPackage;
+import com.androdemo.RectCropPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,9 +28,10 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new ImagePickerPackage(),
+          new ImagePickerPackage(),
           new CustomToastPackage(),
-          new ImageCropperPackage()
+          new ImageCropperPackage(),
+          new RectCropPackage()
       );
     }
 
