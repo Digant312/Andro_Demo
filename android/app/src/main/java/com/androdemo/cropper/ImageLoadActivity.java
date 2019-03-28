@@ -61,7 +61,7 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
     float matrixY = 0; // Y coordinate of matrix inside the ImageView
     float width = 0; // width of drawable
     float height = 0; // height of drawable
-    float currentZoom = 0.2f;
+    float currentZoom = 0.25f;
 
     private String imagePath = "";
     private ImageView profilePicture, overlapView;
@@ -73,7 +73,7 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
     private float dy; // postTranslate Y distance
     private float old_dx = 0; // postTranslate X distance
     private float old_dy = 0; // postTranslate Y distance
-    private float defaultValue = 0.2f;
+    private float defaultValue = 0.25f;
 
     private boolean valueSet = false;
     private float[] matrixValues = new float[9];
@@ -176,7 +176,7 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
                     float postScaleY = ((overlapView.getHeight()/2) - ((scale*profilePicture.getDrawable().getIntrinsicHeight())/2)) *scale;
 
                     matrix.postTranslate(postScaleX,postScaleY);
-                    if(scale == 0.2f){
+                    if(scale == 0.25f){
                         profilePicture.setImageMatrix(initialMatrix);
                     }else{
 
@@ -467,7 +467,7 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
 
                             Log.d("Scale", scale + " SCALE_X" + matrixValues[Matrix.MSCALE_X]);
 
-                            if (matrixValues[Matrix.MSCALE_X] > 0.2
+                            if (matrixValues[Matrix.MSCALE_X] > 0.25
                                 || scale > 1)
                             {
                                 matrix.set(savedMatrix);
