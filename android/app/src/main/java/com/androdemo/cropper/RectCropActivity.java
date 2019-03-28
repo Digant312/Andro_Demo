@@ -98,6 +98,7 @@ public class RectCropActivity extends BaseActivity implements View.OnTouchListen
         btnCancel = findViewById(R.id.btnCancel);
         btnDone = findViewById(R.id.btnDone);
         layCropper = findViewById(R.id.layCropper);
+        layCropper.setDrawingCacheEnabled(true);
 
         createDirectory("");
         profilePicture.setOnTouchListener(this);
@@ -121,7 +122,7 @@ public class RectCropActivity extends BaseActivity implements View.OnTouchListen
             public void onClick(View v)
             {
 
-                cropImage();
+                croppedBitmap = cropImage(layCropper);
 
                 String resultBitmap;
                 if (croppedBitmap != null)
@@ -254,39 +255,6 @@ public class RectCropActivity extends BaseActivity implements View.OnTouchListen
         }
     }
 
-    private void cropImage()
-    {
-
-        Bitmap bitmap = Bitmap.createBitmap(layCropper.getWidth(), layCropper.getHeight(), Bitmap.Config.ARGB_8888);
-        int[] locationOfWindow = new int[2];
-
-        layCropper.getLocationInWindow(locationOfWindow);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-        {
-            PixelCopy.request(getWindow(),
-                              new Rect(locationOfWindow[0], locationOfWindow[1],
-                                       locationOfWindow[0] + layCropper.getWidth(), locationOfWindow[1] + layCropper.getHeight())
-                , bitmap, new PixelCopy.OnPixelCopyFinishedListener()
-                {
-                    @Override
-                    public void onPixelCopyFinished(int copyResult)
-                    {
-
-                    }
-                }, new Handler());
-        }
-        else
-        {
-            layCropper.buildDrawingCache();
-            bitmap = layCropper.getDrawingCache();
-        }
-
-        croppedBitmap = bitmap;
-        // Glide.with(this)
-        //      .load(croppedBitmap)
-        //      .into(imgViewCropped);
-    }
 
     private String getBase64ArrayFromBitmap(Bitmap bitmap)
     {
