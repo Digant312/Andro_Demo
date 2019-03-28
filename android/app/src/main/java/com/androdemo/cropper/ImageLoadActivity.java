@@ -139,13 +139,14 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
                     resultBitmap = "null";
                 }
                 // Intent intent = new Intent();
-                intent.putExtra(Constant.kKEY, imagePath);
 //                intent.putExtra(Constant.kBase64Image, resultBitmap);
-                intent.putExtra(Constant.kImageUri, resultBitmap);
 
                 Intent intent = new Intent(ImageLoadActivity.class, RectCropActivity.class);
                 // intent.putExtra(Constant.kIMAGE_PATH, message);
-                ImageLoadActivity.startActivityForResult(intent, RECT_CROP, null);
+                intent.putExtra(Constant.kKEY, imagePath);
+                intent.putExtra(Constant.kImageUri, resultBitmap);
+
+                ImageLoadActivity.this.startActivityForResult(intent, RECT_CROP, null);
 
                 // setResult(RESULT_OK, intent);
                 // finish();
