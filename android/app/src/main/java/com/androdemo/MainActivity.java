@@ -45,9 +45,8 @@ public class MainActivity extends ReactActivity
                         if (promise != null)
                         {
                             WritableMap result = new WritableNativeMap();
-                            result.putString(Constant.kKEY, data.getStringExtra(Constant.kKEY));
-                            result.putString(Constant.kBase64Image, data.getStringExtra(Constant.kBase64Image));
-                            result.putString(Constant.kImageUri, data.getStringExtra(Constant.kImageUri));
+                            result.putString(Constant.kAVATAR_IMAGE, data.getStringExtra(Constant.kAVATAR_IMAGE));
+                            result.putString(Constant.kPROFILE_IMAGE, data.getStringExtra(Constant.kPROFILE_IMAGE));
                             promise.resolve(result);
 
                         }

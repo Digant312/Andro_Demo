@@ -40,7 +40,7 @@
     <FrameLayout
         android:id="@+id/rootLayout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_150sdp">
+        android:layout_height="@dimen/_200sdp">
 
         <ImageView
             android:id="@+id/profilePicture"
@@ -54,13 +54,13 @@
         <ImageView
             android:id="@+id/overlapView"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_150sdp"
+            android:layout_height="@dimen/_200sdp"
             android:scaleType="fitXY"
-            android:src="@drawable/overlay"/>
+            android:src="@drawable/overlay_rect"/>
 
         <LinearLayout
             android:id="@+id/layCropper"
-            android:layout_width="@dimen/_117sdp"
+            android:layout_width="@dimen/_156sdp"
             android:layout_height="@dimen/_117sdp"
             android:layout_gravity="center"
             android:orientation="horizontal"/>
@@ -128,7 +128,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Cancel"
+                    android:text="Back"
                     android:textColor="@color/blue"
                     android:fontFamily="@font/bogle_regular"/>
 
@@ -154,7 +154,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Next"
+                    android:text="Done"
                     android:textColor="@color/blue"
                     android:fontFamily="@font/bogle_regular"
                     android:textStyle="bold"/>

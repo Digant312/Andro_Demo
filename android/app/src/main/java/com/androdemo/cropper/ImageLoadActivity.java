@@ -1,5 +1,6 @@
 package com.androdemo.cropper;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -28,12 +29,16 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 
 import com.androdemo.R;
+import com.androdemo.ToastModule;
 import com.androdemo.constants.Constant;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.WritableNativeMap;
 
 import java.io.ByteArrayOutputStream;
 
@@ -61,7 +66,6 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
     float matrixY = 0; // Y coordinate of matrix inside the ImageView
     float width = 0; // width of drawable
     float height = 0; // height of drawable
-    float currentZoom = 0.25f;
 
     private String imagePath = "";
     private ImageView profilePicture, overlapView;
@@ -88,6 +92,28 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
 
         init();
         getImagePath();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == Activity.RESULT_OK)
+        {
+            switch (requestCode)
+            {
+                case Constant.RECT_CROP:
+
+                    if (data != null)
+                    {
+                        setResult(RESULT_OK,data);
+                        finish();
+                    }
+
+                    break;
+            }
+        }
     }
 
     private void init()
@@ -141,14 +167,10 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
 //                intent.putExtra(Constant.kBase64Image, resultBitmap);
 
                 Intent intent = new Intent(mContext, RectCropActivity.class);
-                // intent.putExtra(Constant.kIMAGE_PATH, message);
-                intent.putExtra(Constant.kKEY, imagePath);
-                intent.putExtra(Constant.kImageUri, resultBitmap);
+                intent.putExtra(Constant.kIMAGE_PATH, imagePath);
+                intent.putExtra(Constant.kAVATAR_IMAGE, resultBitmap);
 
                 startActivityForResult(intent, Constant.RECT_CROP, null);
-
-                // setResult(RESULT_OK, intent);
-                // finish();
             }
         });
 
@@ -157,10 +179,6 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
             {
-                /*float scale = ((progress / 10.0f) + 1);
-                profilePicture.setScaleX(scale);
-                profilePicture.setScaleY(scale);*/
-
                 if (fromUser)
                 {
                     float scale = getScaleFromProgressValue(progress);
@@ -176,7 +194,7 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
                     float postScaleY = ((overlapView.getHeight()/2) - ((scale*profilePicture.getDrawable().getIntrinsicHeight())/2)) *scale;
 
                     matrix.postTranslate(postScaleX,postScaleY);
-                    if(scale == 0.25f){
+                    if(scale == defaultValue){
                         profilePicture.setImageMatrix(initialMatrix);
                     }else{
 
@@ -231,15 +249,6 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
                                  public void run()
                                  {
                                      Log.v(TAG, "Initail position >>> : " + profilePicture.getWidth() + "--------" +  overlapView.getWidth() + "--------" +  profilePicture.getHeight() + "--------" +  overlapView.getHeight() );
-//                                     float initial_top_position = (overlapView.getHeight() - (defaultValue * profilePicture.getHeight()) )/2 ;
-//                                     matrix.setScale(defaultValue, defaultValue,
-//                                                     ((overlapView.getWidth() / 2) - ((defaultValue * profilePicture.getWidth())/2)),
-//                                                     initial_top_position);
-                                     /*matrix.setScale(defaultValue, defaultValue,
-                                             ((overlapView.getWidth() / 2) - ((defaultValue * profilePicture.getWidth())/2)),
-                                             (75 - ((defaultValue * profilePicture.getHeight())/2)));
-
-                                     profilePicture.setImageMatrix(matrix);*/
 
                                      matrix.setScale(defaultValue, defaultValue,
                                                      (overlapView.getWidth()/2) - ((defaultValue*profilePicture.getDrawable().getIntrinsicWidth())/2),
@@ -461,13 +470,11 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
                         float scale = newDist / oldDist;
                         if (scale <= 2.2)
                         {
-                            currentZoom = scale;
-
                             matrix.getValues(matrixValues);
 
                             Log.d("Scale", scale + " SCALE_X" + matrixValues[Matrix.MSCALE_X]);
 
-                            if (matrixValues[Matrix.MSCALE_X] > 0.25
+                            if (matrixValues[Matrix.MSCALE_X] > defaultValue
                                 || scale > 1)
                             {
                                 matrix.set(savedMatrix);
