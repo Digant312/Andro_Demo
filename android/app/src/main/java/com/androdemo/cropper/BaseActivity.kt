@@ -3,13 +3,14 @@ package com.androdemo.cropper
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Paint
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.PixelCopy
-import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import com.androdemo.constants.Constant
 import com.facebook.react.ReactActivity
@@ -17,7 +18,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
-import com.androdemo.R
+
 
 abstract class BaseActivity : ReactActivity() {
 
@@ -58,7 +59,7 @@ abstract class BaseActivity : ReactActivity() {
         return "PNG_" + timeStamp + "_.png"
     }
 
-    fun cropImage(layCropper: LinearLayout): Bitmap {
+    fun cropImage(layCropper: LinearLayout, profilePicture: ImageView): Bitmap {
 
         var bitmap = Bitmap.createBitmap(layCropper.getWidth(), layCropper.getHeight(), Bitmap.Config.ARGB_8888)
         val locationOfWindow = IntArray(2)
@@ -70,26 +71,18 @@ abstract class BaseActivity : ReactActivity() {
                     Rect(locationOfWindow[0], locationOfWindow[1],
                             locationOfWindow[0] + layCropper.getWidth(), locationOfWindow[1] + layCropper.getHeight()), bitmap, { }, Handler())
         } else {
-            //            layCropper.buildDrawingCache();
-            //            bitmap = layCropper.getDrawingCache();
+            profilePicture.isDrawingCacheEnabled = true
+            profilePicture.buildDrawingCache()
 
-            layCropper.isDrawingCacheEnabled =true
+            bitmap = profilePicture.drawingCache
 
-            layCropper.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
-            layCropper.layout(0, 0, layCropper.measuredWidth, layCropper.measuredHeight)
-
-            layCropper.buildDrawingCache()
-            bitmap = layCropper.drawingCache
-
-            /*bitmap = Bitmap.createBitmap(layCropper.measuredWidth,
-                    layCropper.measuredHeight,
-                    Bitmap.Config.ARGB_8888)
-
-            val c = Canvas(bitmap)
-            layCropper.layout(layCropper.left, layCropper.top, layCropper.right, layCropper.bottom)
-            layCropper.draw(c)*/
-
+            val output = Bitmap.createBitmap(layCropper.width,
+                    layCropper.height, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(output)
+            val rect = Rect(layCropper.left, layCropper.top, layCropper.right, layCropper.bottom)
+            val paint = Paint()
+            canvas.drawBitmap(bitmap, rect, Rect(0, 0, layCropper.width, layCropper.height), paint)
+            bitmap = output
         }
 
         return bitmap

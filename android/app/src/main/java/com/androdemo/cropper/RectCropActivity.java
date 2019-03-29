@@ -122,7 +122,7 @@ public class RectCropActivity extends BaseActivity implements View.OnTouchListen
             public void onClick(View v)
             {
 
-                croppedBitmap = cropImage(layCropper);
+                croppedBitmap = cropImage(layCropper,profilePicture);
 
                 String resultBitmap;
                 if (croppedBitmap != null)

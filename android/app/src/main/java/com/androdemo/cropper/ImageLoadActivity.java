@@ -1,7 +1,6 @@
 package com.androdemo.cropper;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -12,7 +11,6 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -21,7 +19,6 @@ import android.support.v7.widget.CardView;
 import android.util.Base64;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.PixelCopy;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -29,16 +26,12 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 
 import com.androdemo.R;
-import com.androdemo.ToastModule;
 import com.androdemo.constants.Constant;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.facebook.react.bridge.Promise;
-import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.bridge.WritableNativeMap;
 
 import java.io.ByteArrayOutputStream;
 
@@ -151,7 +144,7 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
             public void onClick(View v)
             {
 
-                cropImage();
+                croppedBitmap = getclip(cropImage(layCropper,profilePicture));
 
                 String resultBitmap;
                 if (croppedBitmap != null)
@@ -280,40 +273,6 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
                 Log.v("Error", "Image path is null");
             }
         }
-    }
-
-    private void cropImage()
-    {
-
-        Bitmap bitmap = Bitmap.createBitmap(layCropper.getWidth(), layCropper.getHeight(), Bitmap.Config.ARGB_8888);
-        int[] locationOfWindow = new int[2];
-
-        layCropper.getLocationInWindow(locationOfWindow);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-        {
-            PixelCopy.request(getWindow(),
-                              new Rect(locationOfWindow[0], locationOfWindow[1],
-                                       locationOfWindow[0] + layCropper.getWidth(), locationOfWindow[1] + layCropper.getHeight())
-                , bitmap, new PixelCopy.OnPixelCopyFinishedListener()
-                {
-                    @Override
-                    public void onPixelCopyFinished(int copyResult)
-                    {
-
-                    }
-                }, new Handler());
-        }
-        else
-        {
-            layCropper.buildDrawingCache();
-            bitmap = layCropper.getDrawingCache();
-        }
-
-        croppedBitmap = getclip(bitmap);
-        // Glide.with(this)
-        //      .load(croppedBitmap)
-        //      .into(imgViewCropped);
     }
 
     private String getBase64ArrayFromBitmap(Bitmap bitmap)
