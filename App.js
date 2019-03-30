@@ -28,7 +28,8 @@ export default class App extends Component {
       ToastExample.show(uri, 300).then(data => {
         console.log("Promise done", data);
         this.setState({
-          base64Image: data.profile_image
+          profile_image: data.profile_image,
+          avatar_image: data.avatar_image
         });
       });
     } catch (e) {
@@ -84,8 +85,11 @@ export default class App extends Component {
         <TouchableOpacity onPress={() => this.selectPhotoTapped()}>
         <Text style={styles.instructions}>Select Image</Text>
         </TouchableOpacity>
-        {this.state.base64Image ?
-        <Image source={{ isStatic:true, uri: this.state.base64Image }} style={{width: 150, height: 150}}/>
+        {this.state.avatar_image ?
+        <Image source={{ isStatic:true, uri: this.state.avatar_image }} style={{width: 150, height: 150}}/>
+        : null}
+        {this.state.profile_image ?
+        <Image source={{ isStatic:true, uri: this.state.profile_image }} style={{width: 200, height: 150}}/>
         : null}
       </View>
     );

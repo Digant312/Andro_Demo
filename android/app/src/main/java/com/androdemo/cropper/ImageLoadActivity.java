@@ -241,7 +241,6 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
                                  @Override
                                  public void run()
                                  {
-                                     Log.v(TAG, "Initail position >>> : " + profilePicture.getWidth() + "--------" +  overlapView.getWidth() + "--------" +  profilePicture.getHeight() + "--------" +  overlapView.getHeight() );
 
                                      matrix.setScale(defaultValue, defaultValue,
                                                      (overlapView.getWidth()/2) - ((defaultValue*profilePicture.getDrawable().getIntrinsicWidth())/2),
