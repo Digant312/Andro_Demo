@@ -64,7 +64,7 @@ public class RectCropActivity extends BaseActivity implements View.OnTouchListen
     private String imagePath = "";
     private ImageView profilePicture, overlapView;
     private AppCompatSeekBar seekZoomController;
-    private CardView btnCancel, btnDone;
+    private LinearLayout btnCancel, btnDone;
     private LinearLayout layCropper;
     private String TAG = "ImageLoadActivity";
     private float dx; // postTranslate X distance
