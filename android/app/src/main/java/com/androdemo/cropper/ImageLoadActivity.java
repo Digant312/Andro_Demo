@@ -316,6 +316,9 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
         dumpEvent(event);
 
         // Handle touch events here...
+        float currentProgress = seekZoomController.getProgress();
+        Log.d(TAG, "currentProgress=" + currentProgress);
+
         switch (event.getAction() & MotionEvent.ACTION_MASK)
         {
             case MotionEvent.ACTION_DOWN:
@@ -424,6 +427,7 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
 
                     float newDist = spacing(event);
                     Log.d(TAG, "newDist=" + newDist);
+
                     if (newDist > 5f)
                     {
                         float scale = newDist / oldDist;
