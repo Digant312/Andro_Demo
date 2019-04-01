@@ -33,8 +33,8 @@ export default class App extends Component {
         });
 
         let filesToDelete = [];
-        if(data.profile_image) ToastExample.deleteFiles(data.profile_image);
-        if(data.avatar_image) ToastExample.deleteFiles(data.avatar_image);
+        // if(data.profile_image) ToastExample.deleteFiles(data.profile_image);
+        // if(data.avatar_image) ToastExample.deleteFiles(data.avatar_image);
       });
     } catch (e) {
       this.setState = {
