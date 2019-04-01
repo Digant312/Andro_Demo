@@ -70,7 +70,8 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
     private float dy; // postTranslate Y distance
     private float old_dx = 0; // postTranslate X distance
     private float old_dy = 0; // postTranslate Y distance
-    private float defaultValue = 0.25f;
+    private float defaultValue = 0.3f;
+    private float minZoomScale = 0.2f;
 
     private boolean valueSet = false;
     private float[] matrixValues = new float[9];
@@ -431,17 +432,13 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
                     if (newDist > 5f)
                     {
                         float scale = newDist / oldDist;
-//                        if (scale <= 2.2)
-                        if(seekZoomController.getProgress() == 100){
-                            Log.d("Scale @ max -------", scale + " SCALE_X" + matrixValues[Matrix.MSCALE_X]);
-                        }
                         if(seekZoomController.getProgress() <= 99 || (scale < 1 && seekZoomController.getProgress() == 100))
                         {
                             matrix.getValues(matrixValues);
 
                             Log.d("Scale", scale + " SCALE_X" + matrixValues[Matrix.MSCALE_X]);
 
-                            if (matrixValues[Matrix.MSCALE_X] > defaultValue
+                            if (matrixValues[Matrix.MSCALE_X] > minZoomScale
                                 || scale > 1)
                             {
                                 matrix.set(savedMatrix);
