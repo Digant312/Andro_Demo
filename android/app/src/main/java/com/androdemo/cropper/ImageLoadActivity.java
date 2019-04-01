@@ -431,7 +431,11 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
                     if (newDist > 5f)
                     {
                         float scale = newDist / oldDist;
-                        if (scale <= 1.2)
+//                        if (scale <= 2.2)
+                        if(seekZoomController.getProgress() == 100){
+                            Log.d("Scale @ max -------", scale + " SCALE_X" + matrixValues[Matrix.MSCALE_X]);
+                        }
+                        if(seekZoomController.getProgress() <= 99 || (scale < 1 && seekZoomController.getProgress() == 100))
                         {
                             matrix.getValues(matrixValues);
 
