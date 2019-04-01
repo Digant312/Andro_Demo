@@ -29,6 +29,18 @@ abstract class BaseActivity : ReactActivity() {
         mContext = this
     }
 
+    companion object {
+
+        fun deleteFile(filePath: String) {
+
+            if (filePath.trim().isNotEmpty()) {
+                val uri = Uri.parse(filePath).getPath()
+                if (File(uri).exists())
+                    File(uri).delete()
+            }
+        }
+    }
+
     fun createDirectory(subDir: String = "") {
         val invoiceDirectory = File(Constant.docPath + subDir)
         if (!invoiceDirectory.exists())
