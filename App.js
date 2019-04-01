@@ -31,6 +31,11 @@ export default class App extends Component {
           profile_image: data.profile_image,
           avatar_image: data.avatar_image
         });
+
+        let filesToDelete = [];
+        if(data.profile_image) filesToDelete.push(data.profile_image);
+        if(data.avatar_image) filesToDelete.push(data.avatar_image);
+        ToastExample.deleteFiles('SAMPLE STRING -----')
       });
     } catch (e) {
       this.setState = {

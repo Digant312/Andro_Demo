@@ -66,4 +66,10 @@ public class ToastModule extends ReactContextBaseJavaModule
         //     Toast.makeText(getReactApplicationContext(), "Promise is null.", Toast.LENGTH_SHORT).show();
         // }
     }
+
+    @ReactMethod
+    public void deleteFiles(String files)
+    {
+        Log.d("deleteFiles", files);
+    }
 }
