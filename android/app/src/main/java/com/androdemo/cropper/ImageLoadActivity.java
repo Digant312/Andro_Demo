@@ -144,7 +144,8 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
             public void onClick(View v)
             {
 
-                croppedBitmap = getclip(cropImage(layCropper,profilePicture));
+//                croppedBitmap = getclip(cropImage(layCropper,profilePicture));
+                croppedBitmap = cropImage(layCropper,profilePicture);
 
                 String resultBitmap;
                 if (croppedBitmap != null)
@@ -285,7 +286,7 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
 
     private float getScaleFromProgressValue(int scaleValue)
     {
-        float progressValue = ((10f + scaleValue) / 50f);
+        float progressValue = ((scaleValue / 100f) + 0.2f);
         Log.e("Reverse", progressValue + "");
         return progressValue;
     }
@@ -426,7 +427,7 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
                     if (newDist > 5f)
                     {
                         float scale = newDist / oldDist;
-                        if (scale <= 2.2)
+                        if (scale <= 1.2)
                         {
                             matrix.getValues(matrixValues);
 
@@ -521,7 +522,7 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
 
     private int getProgressFromScaleValue(float scaleValue)
     {
-        int progressValue = Math.round((50 * scaleValue) - 10);
+        int progressValue = Math.round(((10 * scaleValue) - 2)*10);
         Log.e("Progress", progressValue + "");
         seekZoomController.setProgress(progressValue);
         return progressValue;
