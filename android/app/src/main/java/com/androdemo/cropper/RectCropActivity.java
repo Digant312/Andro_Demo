@@ -35,6 +35,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
 
 
 public class RectCropActivity extends BaseActivity implements View.OnTouchListener
@@ -78,6 +79,8 @@ public class RectCropActivity extends BaseActivity implements View.OnTouchListen
     private float[] matrixValues = new float[9];
     private float[] matrixTest = new float[9];
     private Bitmap croppedBitmap = null;
+
+    private boolean isFromTouchEvent = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -153,25 +156,36 @@ public class RectCropActivity extends BaseActivity implements View.OnTouchListen
             {
                 if (fromUser)
                 {
-                    float scale = getScaleFromProgressValue(progress);
-                    matrix.getValues(matrixTest);
-                    matrix.setScale(scale, scale,
-                                    matrixTest[Matrix.MTRANS_X],
-                                    matrixTest[Matrix.MTRANS_Y]);
+                    Log.e("OLD matrix", Arrays.toString(matrixTest));
+                    profilePicture.getImageMatrix().getValues(matrixTest);
 
+                    float scale = getScaleFromProgressValue(progress);
+                    matrix.setScale(scale, scale,
+                            matrixTest[Matrix.MTRANS_X],
+                            matrixTest[Matrix.MTRANS_Y]);
+                    if (isFromTouchEvent)
+                        matrix.preTranslate(matrixTest[Matrix.MTRANS_X], matrixTest[Matrix.MTRANS_Y]); //Enable this line if you want to make the zoom directly scalable from where we left
                     profilePicture.setImageMatrix(matrix);
 
+
                     matrix.getValues(matrixTest);
-                    float postScaleX = ((overlapView.getWidth()/2) - ((scale*profilePicture.getDrawable().getIntrinsicWidth())/2)) * scale ;
-                    float postScaleY = ((overlapView.getHeight()/2) - ((scale*profilePicture.getDrawable().getIntrinsicHeight())/2)) *scale;
 
-                    matrix.postTranslate(postScaleX,postScaleY);
-                    if(scale == defaultValue){
-                        profilePicture.setImageMatrix(initialMatrix);
-                    }else{
+                    //TODO Enable this block if you want to use centralized zoom system.
+                    if (!isFromTouchEvent) {
+                        float postScaleX = ((overlapView.getWidth() / 2) - ((scale * profilePicture.getDrawable().getIntrinsicWidth()) / 2)) * scale;
+                        float postScaleY = ((overlapView.getHeight() / 2) - ((scale * profilePicture.getDrawable().getIntrinsicHeight()) / 2)) * scale;
 
-                        profilePicture.setImageMatrix(matrix);
+                        matrix.postTranslate(postScaleX, postScaleY);
+                        if (scale == defaultValue) {
+                            profilePicture.setImageMatrix(initialMatrix);
+                        } else {
+
+                            profilePicture.setImageMatrix(matrix);
+                        }
+                        matrix.getValues(matrixTest);
                     }
+
+                    Log.e("NEW matrix", Arrays.toString(matrixTest));
                 }
             }
 
@@ -295,6 +309,8 @@ public class RectCropActivity extends BaseActivity implements View.OnTouchListen
     @Override
     public boolean onTouch(View v, MotionEvent event)
     {
+        isFromTouchEvent = true;
+
         ImageView view = (ImageView) v;
         dumpEvent(event);
 
@@ -445,14 +461,10 @@ public class RectCropActivity extends BaseActivity implements View.OnTouchListen
         view.setImageMatrix(matrix);
         view.getImageMatrix().getValues(matrixTest);
 
+        Log.e("Touch matrix", Arrays.toString(matrixTest));
         old_dx = dx;
         old_dy = dy;
 
-        int[] position = getBitmapOffset(view, false);
-        //        int[] positionCropper = getBitmapOffset(imgRef, false);
-
-        Log.d("YYYY", position[0] + "/ " + position[1]);
-        //        Log.d("YYYYY", positionCropper[0] + "/ " + positionCropper[1]);
         return true;
     }
 
