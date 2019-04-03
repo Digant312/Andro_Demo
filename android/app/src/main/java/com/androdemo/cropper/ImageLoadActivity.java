@@ -496,7 +496,8 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
     }
 
     private int getProgressFromScaleValue(float scaleValue) {
-        int progressValue = Math.round(((10 * scaleValue) - 2) * 10);
+        // int progressValue = Math.round(((10 * scaleValue) - 2) * 10);
+        int progressValue = Math.round((scaleValue - 0.2f) * 100f);
         Log.e("Progress", progressValue + "");
         seekZoomController.setProgress(progressValue);
         return progressValue;

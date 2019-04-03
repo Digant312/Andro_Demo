@@ -5,7 +5,7 @@
     android:useLevel="false"
     android:tint="#757575">
     <solid
-        android:color="#757575" />
+        android:color="@color/pink" />
     <size
         android:width="18dp"
         android:height="18dp"
