@@ -93,9 +93,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:progress="3"
-            android:progressTint="@color/grey"
-            android:secondaryProgressTint="@color/grey"
-            />
+            android:progressDrawable="@drawable/custom_seekbar_progress"
+            android:thumb="@drawable/custom_seekbar_thumb" />
 
         <ImageView
             android:layout_width="@dimen/_25sdp"

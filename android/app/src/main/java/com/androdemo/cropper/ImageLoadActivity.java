@@ -169,15 +169,15 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
                     matrix.setScale(scale, scale,
                             matrixTest[Matrix.MTRANS_X],
                             matrixTest[Matrix.MTRANS_Y]);
-                    if (isFromTouchEvent)
-                        matrix.preTranslate(matrixTest[Matrix.MTRANS_X], matrixTest[Matrix.MTRANS_Y]); //Enable this line if you want to make the zoom directly scalable from where we left
+                    // if (isFromTouchEvent)
+                    //     matrix.preTranslate(matrixTest[Matrix.MTRANS_X], matrixTest[Matrix.MTRANS_Y]); //Enable this line if you want to make the zoom directly scalable from where we left
                     profilePicture.setImageMatrix(matrix);
 
 
                     matrix.getValues(matrixTest);
 
                     //TODO Enable this block if you want to use centralized zoom system.
-                    if (!isFromTouchEvent) {
+                    // if (!isFromTouchEvent) {
                         float postScaleX = ((overlapView.getWidth() / 2) - ((scale * profilePicture.getDrawable().getIntrinsicWidth()) / 2)) * scale;
                         float postScaleY = ((overlapView.getHeight() / 2) - ((scale * profilePicture.getDrawable().getIntrinsicHeight()) / 2)) * scale;
 
@@ -189,7 +189,7 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
                             profilePicture.setImageMatrix(matrix);
                         }
                         matrix.getValues(matrixTest);
-                    }
+                    // }
 
                     Log.e("NEW matrix", Arrays.toString(matrixTest));
                 }
