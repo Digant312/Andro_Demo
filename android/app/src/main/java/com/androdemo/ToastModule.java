@@ -14,31 +14,35 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.ReadableArray;
-import com.facebook.react.bridge.ReadableNativeArray;
 
 import java.util.HashMap;
 import java.util.Map;
 
 
-public class ToastModule extends ReactContextBaseJavaModule {
+public class ToastModule extends ReactContextBaseJavaModule
+{
 
     private static final String DURATION_SHORT_KEY = "SHORT";
     private static final String DURATION_LONG_KEY = "LONG";
     public static SparseArray<Promise> mPromises;
+    private ReactApplicationContext mContext;
 
-    public ToastModule(ReactApplicationContext reactContext) {
+    public ToastModule(ReactApplicationContext reactContext)
+    {
         super(reactContext);
+        mContext = reactContext;
         mPromises = new SparseArray<>();
     }
 
     @Override
-    public String getName() {
+    public String getName()
+    {
         return "ToastExample";
     }
 
     @Override
-    public Map<String, Object> getConstants() {
+    public Map<String, Object> getConstants()
+    {
         final Map<String, Object> constants = new HashMap<>();
         constants.put(DURATION_SHORT_KEY, Toast.LENGTH_SHORT);
         constants.put(DURATION_LONG_KEY, Toast.LENGTH_LONG);
@@ -46,27 +50,38 @@ public class ToastModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void show(String message, int duration, Promise promise) {
+    public void show(String message, int duration, Promise promise)
+    {
+        boolean isTablet = mContext.getResources().getBoolean(R.bool.isTablet);
+        Log.e("Screen Dimension", "" + isTablet);
         Log.d("ImagePath", message);
 
-        Intent intent = new Intent(getReactApplicationContext(), ImageLoadActivity.class);
+        Intent intent;
+        /*if(isTablet){
+            intent = new Intent(getReactApplicationContext(), ImageLoadTabActivity.class);
+        }else{
+
+        }*/
+        intent = new Intent(getReactApplicationContext(), ImageLoadActivity.class);
+
         intent.putExtra(Constant.kIMAGE_PATH, message);
         getReactApplicationContext().startActivityForResult(intent, Constant.IMAGE_CROP, null);
 
         mPromises.put(Constant.IMAGE_CROP, promise);
     }
 
-//    @ReactMethod
-//    public void deleteFiles(ReadableNativeArray files) {
-//        Log.d("deleteFiles - Array", files.toString());
-//
-//        for (int i = 0; i < files.size(); i++) {
-//            BaseActivity.Companion.deleteFile(files.getString(i));
-//        }
-//    }
+    //    @ReactMethod
+    //    public void deleteFiles(ReadableNativeArray files) {
+    //        Log.d("deleteFiles - Array", files.toString());
+    //
+    //        for (int i = 0; i < files.size(); i++) {
+    //            BaseActivity.Companion.deleteFile(files.getString(i));
+    //        }
+    //    }
 
     @ReactMethod
-    public void deleteFiles(String files) {
+    public void deleteFiles(String files)
+    {
         Log.d("deleteFiles - Single", files.toString());
         BaseActivity.Companion.deleteFile(files.toString());
     }

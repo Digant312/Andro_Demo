@@ -14,4 +14,6 @@ public interface Constant
 
     int IMAGE_CROP = 1000;
     int RECT_CROP = 1001;
+
+    int FINISH_TASK_WITH_ROOT_ACTIVITY = 10;
 }

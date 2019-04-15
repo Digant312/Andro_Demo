@@ -36,8 +36,11 @@ import com.bumptech.glide.request.target.Target;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 
+import static com.androdemo.constants.Constant.FINISH_TASK_WITH_ROOT_ACTIVITY;
 
-public class ImageLoadActivity extends BaseActivity implements View.OnTouchListener {
+
+public class ImageLoadActivity extends BaseActivity implements View.OnTouchListener
+{
 
     // We can be in one of these 3 states
     static final int NONE = 0;
@@ -81,7 +84,8 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
     private boolean isFromTouchEvent = false;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_loading);
 
@@ -90,14 +94,18 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == Activity.RESULT_OK) {
-            switch (requestCode) {
+        if (resultCode == Activity.RESULT_OK)
+        {
+            switch (requestCode)
+            {
                 case Constant.RECT_CROP:
 
-                    if (data != null) {
+                    if (data != null)
+                    {
                         setResult(RESULT_OK, data);
                         finish();
                     }
@@ -105,9 +113,15 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
                     break;
             }
         }
+        else if (resultCode == FINISH_TASK_WITH_ROOT_ACTIVITY)
+        {
+            setResult(RESULT_CANCELED);
+            finish();
+        }
     }
 
-    private void init() {
+    private void init()
+    {
         mContext = this;
 
         profilePicture = findViewById(R.id.profilePicture);
@@ -122,9 +136,11 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
         createDirectory("");
         profilePicture.setOnTouchListener(this);
 
-        btnCancel.setOnClickListener(new View.OnClickListener() {
+        btnCancel.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 Intent intent = new Intent();
                 intent.putExtra(Constant.kKEY, imagePath);
 
@@ -133,22 +149,27 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
             }
         });
 
-        btnDone.setOnClickListener(new View.OnClickListener() {
+        btnDone.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
 
-//                croppedBitmap = getclip(cropImage(layCropper,profilePicture));
+                //                croppedBitmap = getclip(cropImage(layCropper,profilePicture));
                 croppedBitmap = cropImage(layCropper, profilePicture);
 
                 String resultBitmap;
-                if (croppedBitmap != null) {
+                if (croppedBitmap != null)
+                {
                     resultBitmap = saveBitmapToFile(croppedBitmap).toString();
-//                    resultBitmap = getBase64ArrayFromBitmap(croppedBitmap);
-                } else {
+                    //                    resultBitmap = getBase64ArrayFromBitmap(croppedBitmap);
+                }
+                else
+                {
                     resultBitmap = "null";
                 }
                 // Intent intent = new Intent();
-//                intent.putExtra(Constant.kBase64Image, resultBitmap);
+                //                intent.putExtra(Constant.kBase64Image, resultBitmap);
 
                 Intent intent = new Intent(mContext, RectCropActivity.class);
                 intent.putExtra(Constant.kIMAGE_PATH, imagePath);
@@ -158,37 +179,42 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
             }
         });
 
-        seekZoomController.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        seekZoomController.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
+        {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (fromUser) {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
+            {
+                if (fromUser)
+                {
                     Log.e("OLD matrix", Arrays.toString(matrixTest));
                     profilePicture.getImageMatrix().getValues(matrixTest);
 
                     float scale = getScaleFromProgressValue(progress);
                     matrix.setScale(scale, scale,
-                            matrixTest[Matrix.MTRANS_X],
-                            matrixTest[Matrix.MTRANS_Y]);
+                                    matrixTest[Matrix.MTRANS_X],
+                                    matrixTest[Matrix.MTRANS_Y]);
                     // if (isFromTouchEvent)
                     //     matrix.preTranslate(matrixTest[Matrix.MTRANS_X], matrixTest[Matrix.MTRANS_Y]); //Enable this line if you want to make the zoom directly scalable from where we left
                     profilePicture.setImageMatrix(matrix);
-
 
                     matrix.getValues(matrixTest);
 
                     //TODO Enable this block if you want to use centralized zoom system.
                     // if (!isFromTouchEvent) {
-                        float postScaleX = ((overlapView.getWidth() / 2) - ((scale * profilePicture.getDrawable().getIntrinsicWidth()) / 2)) * scale;
-                        float postScaleY = ((overlapView.getHeight() / 2) - ((scale * profilePicture.getDrawable().getIntrinsicHeight()) / 2)) * scale;
+                    float postScaleX = ((overlapView.getWidth() / 2) - ((scale * profilePicture.getDrawable().getIntrinsicWidth()) / 2)) * scale;
+                    float postScaleY = ((overlapView.getHeight() / 2) - ((scale * profilePicture.getDrawable().getIntrinsicHeight()) / 2)) * scale;
 
-                        matrix.postTranslate(postScaleX, postScaleY);
-                        if (scale == defaultValue) {
-                            profilePicture.setImageMatrix(initialMatrix);
-                        } else {
+                    matrix.postTranslate(postScaleX, postScaleY);
+                    if (scale == defaultValue)
+                    {
+                        profilePicture.setImageMatrix(initialMatrix);
+                    }
+                    else
+                    {
 
-                            profilePicture.setImageMatrix(matrix);
-                        }
-                        matrix.getValues(matrixTest);
+                        profilePicture.setImageMatrix(matrix);
+                    }
+                    matrix.getValues(matrixTest);
                     // }
 
                     Log.e("NEW matrix", Arrays.toString(matrixTest));
@@ -196,72 +222,90 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
+            public void onStartTrackingTouch(SeekBar seekBar)
+            {
 
             }
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
+            public void onStopTrackingTouch(SeekBar seekBar)
+            {
 
             }
         });
     }
 
-    private void getImagePath() {
-        if (getIntent().hasExtra(Constant.kIMAGE_PATH)) {
+    private void getImagePath()
+    {
+        if (getIntent().hasExtra(Constant.kIMAGE_PATH))
+        {
             imagePath = getIntent().getStringExtra(Constant.kIMAGE_PATH);
 
-            if (imagePath != null) {
+            if (imagePath != null)
+            {
                 Log.v("Verbose", "Setting path : " + imagePath);
 
                 Glide.with(this)
-                        .load(imagePath)
-                        .listener(new RequestListener<Drawable>() {
-                            @Override
-                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                return false;
-                            }
+                     .load(imagePath)
+                     .listener(new RequestListener<Drawable>()
+                     {
+                         @Override
+                         public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource)
+                         {
+                             return false;
+                         }
 
-                            @Override
-                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource,
-                                                           boolean isFirstResource) {
-                                Log.d(TAG, "Matrix : " + profilePicture.getMatrix());
+                         @Override
+                         public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource,
+                                                        boolean isFirstResource)
+                         {
+                             Log.d(TAG, "Matrix : " + profilePicture.getMatrix());
 
-                                new Handler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
+                             new Handler().postDelayed(new Runnable()
+                             {
+                                 @Override
+                                 public void run()
+                                 {
 
-                                        matrix.setScale(defaultValue, defaultValue,
-                                                (overlapView.getWidth() / 2) - ((defaultValue * profilePicture.getDrawable().getIntrinsicWidth()) / 2),
-                                                (overlapView.getHeight() / 2) - ((defaultValue * profilePicture.getDrawable().getIntrinsicHeight()) / 2));
+                                     matrix.setScale(defaultValue, defaultValue,
+                                                     (overlapView.getWidth() / 2) -
+                                                     ((defaultValue * profilePicture.getDrawable().getIntrinsicWidth()) / 2),
+                                                     (overlapView.getHeight() / 2) -
+                                                     ((defaultValue * profilePicture.getDrawable().getIntrinsicHeight()) / 2));
 
+                                     profilePicture.setImageMatrix(matrix);
+                                     matrix.getValues(matrixTest);
+                                     float postScaleX =
+                                         ((overlapView.getWidth() / 2) - ((defaultValue * profilePicture.getDrawable().getIntrinsicWidth()) / 2)) *
+                                         defaultValue;
+                                     float postScaleY =
+                                         ((overlapView.getHeight() / 2) - ((defaultValue * profilePicture.getDrawable().getIntrinsicHeight()) / 2)) *
+                                         defaultValue;
 
-                                        profilePicture.setImageMatrix(matrix);
-                                        matrix.getValues(matrixTest);
-                                        float postScaleX = ((overlapView.getWidth() / 2) - ((defaultValue * profilePicture.getDrawable().getIntrinsicWidth()) / 2)) * defaultValue;
-                                        float postScaleY = ((overlapView.getHeight() / 2) - ((defaultValue * profilePicture.getDrawable().getIntrinsicHeight()) / 2)) * defaultValue;
+                                     matrix.postTranslate(postScaleX, postScaleY);
+                                     profilePicture.setImageMatrix(matrix);
+                                     if (initialMatrix == null)
+                                     {
+                                         Matrix matrix = profilePicture.getImageMatrix();
+                                         initialMatrix = matrix;
+                                     }
+                                 }
+                             }, 200);
 
-
-                                        matrix.postTranslate(postScaleX, postScaleY);
-                                        profilePicture.setImageMatrix(matrix);
-                                        if (initialMatrix == null) {
-                                            Matrix matrix = profilePicture.getImageMatrix();
-                                            initialMatrix = matrix;
-                                        }
-                                    }
-                                }, 200);
-
-                                return false;
-                            }
-                        })
-                        .into(profilePicture);
-            } else {
+                             return false;
+                         }
+                     })
+                     .into(profilePicture);
+            }
+            else
+            {
                 Log.v("Error", "Image path is null");
             }
         }
     }
 
-    private String getBase64ArrayFromBitmap(Bitmap bitmap) {
+    private String getBase64ArrayFromBitmap(Bitmap bitmap)
+    {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
         byte[] byteArray = byteArrayOutputStream.toByteArray();
@@ -269,15 +313,17 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
         return encoded;
     }
 
-    private float getScaleFromProgressValue(int scaleValue) {
+    private float getScaleFromProgressValue(int scaleValue)
+    {
         float progressValue = ((scaleValue / 100f) + 0.2f);
         Log.e("Reverse", progressValue + "");
         return progressValue;
     }
 
-    public static Bitmap getclip(Bitmap bitmap) {
+    public static Bitmap getclip(Bitmap bitmap)
+    {
         Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
-                bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+                                            bitmap.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
 
         final Paint paint = new Paint();
@@ -286,14 +332,15 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
         paint.setAntiAlias(true);
         canvas.drawARGB(0, 0, 0, 0);
         canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
-                bitmap.getWidth() / 2, paint);
+                          bitmap.getWidth() / 2, paint);
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(bitmap, rect, rect, paint);
         return output;
     }
 
     @Override
-    public boolean onTouch(View v, MotionEvent event) {
+    public boolean onTouch(View v, MotionEvent event)
+    {
 
         isFromTouchEvent = true;
 
@@ -304,7 +351,8 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
         float currentProgress = seekZoomController.getProgress();
         Log.d(TAG, "currentProgress=" + currentProgress);
 
-        switch (event.getAction() & MotionEvent.ACTION_MASK) {
+        switch (event.getAction() & MotionEvent.ACTION_MASK)
+        {
             case MotionEvent.ACTION_DOWN:
                 savedMatrix.set(matrix);
                 start.set(event.getX(), event.getY());
@@ -314,7 +362,8 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
             case MotionEvent.ACTION_POINTER_DOWN:
                 oldDist = spacing(event);
                 Log.d(TAG, "oldDist=" + oldDist);
-                if (oldDist > 10f) {
+                if (oldDist > 10f)
+                {
                     savedMatrix.set(matrix);
                     midPoint(mid, event);
                     mode = ZOOM;
@@ -327,7 +376,8 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
                 Log.d(TAG, "mode=NONE");
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (mode == DRAG) {
+                if (mode == DRAG)
+                {
 
                     /*//Customized logic with boundaries.
                     matrix.set(savedMatrix);
@@ -403,20 +453,25 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
                     // Original logic without boundaries
                     matrix.set(savedMatrix);
                     matrix.postTranslate(event.getX() - start.x, event.getY() - start.y);
-                } else if (mode == ZOOM) {
+                }
+                else if (mode == ZOOM)
+                {
 
                     float newDist = spacing(event);
                     Log.d(TAG, "newDist=" + newDist);
 
-                    if (newDist > 5f) {
+                    if (newDist > 5f)
+                    {
                         float scale = newDist / oldDist;
-                        if (seekZoomController.getProgress() <= 99 || (scale < 1 && seekZoomController.getProgress() == 100)) {
+                        if (seekZoomController.getProgress() <= 99 || (scale < 1 && seekZoomController.getProgress() == 100))
+                        {
                             matrix.getValues(matrixValues);
 
                             Log.d("Scale", scale + " SCALE_X" + matrixValues[Matrix.MSCALE_X]);
 
                             if (matrixValues[Matrix.MSCALE_X] > minZoomScale
-                                    || scale > 1) {
+                                || scale > 1)
+                            {
                                 matrix.set(savedMatrix);
                                 matrix.postScale(scale, scale, mid.x, mid.y);
                                 Log.d("Applied Scale", scale + "Mix X&Y : " + mid.x + " / " + mid.y);
@@ -450,26 +505,30 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
         return true;
     }
 
-    private void dumpEvent(MotionEvent event) {
+    private void dumpEvent(MotionEvent event)
+    {
         String names[] = {"DOWN", "UP", "MOVE", "CANCEL", "OUTSIDE",
-                "POINTER_DOWN", "POINTER_UP", "7?", "8?", "9?"};
+                          "POINTER_DOWN", "POINTER_UP", "7?", "8?", "9?"};
         StringBuilder sb = new StringBuilder();
         int action = event.getAction();
         int actionCode = action & MotionEvent.ACTION_MASK;
         sb.append("event ACTION_").append(names[actionCode]);
         if (actionCode == MotionEvent.ACTION_POINTER_DOWN
-                || actionCode == MotionEvent.ACTION_POINTER_UP) {
+            || actionCode == MotionEvent.ACTION_POINTER_UP)
+        {
             sb.append("(pid ").append(
-                    action >> MotionEvent.ACTION_POINTER_ID_SHIFT);
+                action >> MotionEvent.ACTION_POINTER_ID_SHIFT);
             sb.append(")");
         }
         sb.append("[");
-        for (int i = 0; i < event.getPointerCount(); i++) {
+        for (int i = 0; i < event.getPointerCount(); i++)
+        {
             sb.append("#").append(i);
             sb.append("(pid ").append(event.getPointerId(i));
             sb.append(")=").append((int) event.getX(i));
             sb.append(",").append((int) event.getY(i));
-            if (i + 1 < event.getPointerCount()) {
+            if (i + 1 < event.getPointerCount())
+            {
                 sb.append(";");
             }
         }
@@ -480,7 +539,8 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
     /**
      * Determine the space between the first two fingers
      */
-    private float spacing(MotionEvent event) {
+    private float spacing(MotionEvent event)
+    {
         float x = event.getX(0) - event.getX(1);
         float y = event.getY(0) - event.getY(1);
         return (float) Math.sqrt(x * x + y * y);
@@ -489,13 +549,15 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
     /**
      * Calculate the mid point of the first two fingers
      */
-    private void midPoint(PointF point, MotionEvent event) {
+    private void midPoint(PointF point, MotionEvent event)
+    {
         float x = event.getX(0) + event.getX(1);
         float y = event.getY(0) + event.getY(1);
         point.set(x / 2, y / 2);
     }
 
-    private int getProgressFromScaleValue(float scaleValue) {
+    private int getProgressFromScaleValue(float scaleValue)
+    {
         // int progressValue = Math.round(((10 * scaleValue) - 2) * 10);
         int progressValue = Math.round((scaleValue - 0.2f) * 100f);
         Log.e("Progress", progressValue + "");
@@ -503,7 +565,8 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
         return progressValue;
     }
 
-    public int[] getBitmapOffset(ImageView img, Boolean includeLayout) {
+    public int[] getBitmapOffset(ImageView img, Boolean includeLayout)
+    {
         int[] offset = new int[2];
         float[] values = new float[9];
 
@@ -513,7 +576,8 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
         offset[0] = (int) values[5];
         offset[1] = (int) values[2];
 
-        if (includeLayout) {
+        if (includeLayout)
+        {
             ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) img.getLayoutParams();
             int paddingTop = (int) (img.getPaddingTop());
             int paddingLeft = (int) (img.getPaddingLeft());
@@ -524,7 +588,8 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
         return offset;
     }
 
-    public int[] getLayoutOffset(LinearLayout img, Boolean includeLayout) {
+    public int[] getLayoutOffset(LinearLayout img, Boolean includeLayout)
+    {
         int[] offset = new int[2];
         float[] values = new float[9];
 
@@ -534,7 +599,8 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
         offset[0] = (int) values[5];
         offset[1] = (int) values[2];
 
-        if (includeLayout) {
+        if (includeLayout)
+        {
             ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) img.getLayoutParams();
             int paddingTop = (int) (img.getPaddingTop());
             int paddingLeft = (int) (img.getPaddingLeft());

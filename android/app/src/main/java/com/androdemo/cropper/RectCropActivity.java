@@ -1,5 +1,6 @@
 package com.androdemo.cropper;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -37,6 +38,8 @@ import com.bumptech.glide.request.target.Target;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 
+import static com.androdemo.constants.Constant.FINISH_TASK_WITH_ROOT_ACTIVITY;
+
 
 public class RectCropActivity extends BaseActivity implements View.OnTouchListener
 {
@@ -65,7 +68,7 @@ public class RectCropActivity extends BaseActivity implements View.OnTouchListen
     private String imagePath = "";
     private ImageView profilePicture, overlapView;
     private AppCompatSeekBar seekZoomController;
-    private LinearLayout btnCancel, btnDone;
+    private LinearLayout btnCancel, btnDone, btnClose;
     private LinearLayout layCropper;
     private String TAG = "ImageLoadActivity";
     private float dx; // postTranslate X distance
@@ -101,6 +104,7 @@ public class RectCropActivity extends BaseActivity implements View.OnTouchListen
         seekZoomController = findViewById(R.id.seekZoomController);
         btnCancel = findViewById(R.id.btnCancel);
         btnDone = findViewById(R.id.btnDone);
+        btnClose = findViewById(R.id.btnClose);
         layCropper = findViewById(R.id.layCropper);
         layCropper.setDrawingCacheEnabled(true);
 
@@ -126,7 +130,7 @@ public class RectCropActivity extends BaseActivity implements View.OnTouchListen
             public void onClick(View v)
             {
 
-                croppedBitmap = cropImage(layCropper,profilePicture);
+                croppedBitmap = cropImage(layCropper, profilePicture);
 
                 String resultBitmap;
                 if (croppedBitmap != null)
@@ -145,9 +149,21 @@ public class RectCropActivity extends BaseActivity implements View.OnTouchListen
 
                 setResult(RESULT_OK, intent);
                 finish();
-
             }
         });
+
+        if (btnClose != null)
+        {
+            btnClose.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    setResult(FINISH_TASK_WITH_ROOT_ACTIVITY);
+                    finish();
+                }
+            });
+        }
 
         seekZoomController.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
         {
@@ -161,28 +177,30 @@ public class RectCropActivity extends BaseActivity implements View.OnTouchListen
 
                     float scale = getScaleFromProgressValue(progress);
                     matrix.setScale(scale, scale,
-                            matrixTest[Matrix.MTRANS_X],
-                            matrixTest[Matrix.MTRANS_Y]);
+                                    matrixTest[Matrix.MTRANS_X],
+                                    matrixTest[Matrix.MTRANS_Y]);
                     // if (isFromTouchEvent)
                     //     matrix.preTranslate(matrixTest[Matrix.MTRANS_X], matrixTest[Matrix.MTRANS_Y]); //Enable this line if you want to make the zoom directly scalable from where we left
                     profilePicture.setImageMatrix(matrix);
-
 
                     matrix.getValues(matrixTest);
 
                     //TODO Enable this block if you want to use centralized zoom system.
                     // if (!isFromTouchEvent) {
-                        float postScaleX = ((overlapView.getWidth() / 2) - ((scale * profilePicture.getDrawable().getIntrinsicWidth()) / 2)) * scale;
-                        float postScaleY = ((overlapView.getHeight() / 2) - ((scale * profilePicture.getDrawable().getIntrinsicHeight()) / 2)) * scale;
+                    float postScaleX = ((overlapView.getWidth() / 2) - ((scale * profilePicture.getDrawable().getIntrinsicWidth()) / 2)) * scale;
+                    float postScaleY = ((overlapView.getHeight() / 2) - ((scale * profilePicture.getDrawable().getIntrinsicHeight()) / 2)) * scale;
 
-                        matrix.postTranslate(postScaleX, postScaleY);
-                        if (scale == defaultValue) {
-                            profilePicture.setImageMatrix(initialMatrix);
-                        } else {
+                    matrix.postTranslate(postScaleX, postScaleY);
+                    if (scale == defaultValue)
+                    {
+                        profilePicture.setImageMatrix(initialMatrix);
+                    }
+                    else
+                    {
 
-                            profilePicture.setImageMatrix(matrix);
-                        }
-                        matrix.getValues(matrixTest);
+                        profilePicture.setImageMatrix(matrix);
+                    }
+                    matrix.getValues(matrixTest);
                     // }
 
                     Log.e("NEW matrix", Arrays.toString(matrixTest));
@@ -201,9 +219,7 @@ public class RectCropActivity extends BaseActivity implements View.OnTouchListen
 
             }
         });
-
     }
-
 
     private void getImagePath()
     {
@@ -236,24 +252,31 @@ public class RectCropActivity extends BaseActivity implements View.OnTouchListen
                                  @Override
                                  public void run()
                                  {
-                                     Log.v(TAG, "Initail position >>> : " + profilePicture.getWidth() + "--------" +  overlapView.getWidth() + "--------" +  profilePicture.getHeight() + "--------" +  overlapView.getHeight() );
+                                     Log.v(TAG,
+                                           "Initail position >>> : " + profilePicture.getWidth() + "--------" + overlapView.getWidth() + "--------" +
+                                           profilePicture.getHeight() + "--------" + overlapView.getHeight());
 
                                      matrix.setScale(defaultValue, defaultValue,
-                                                     (overlapView.getWidth()/2) - ((defaultValue*profilePicture.getDrawable().getIntrinsicWidth())/2),
-                                                     (overlapView.getHeight()/2) - ((defaultValue*profilePicture.getDrawable().getIntrinsicHeight())/2));
-
+                                                     (overlapView.getWidth() / 2) -
+                                                     ((defaultValue * profilePicture.getDrawable().getIntrinsicWidth()) / 2),
+                                                     (overlapView.getHeight() / 2) -
+                                                     ((defaultValue * profilePicture.getDrawable().getIntrinsicHeight()) / 2));
 
                                      profilePicture.setImageMatrix(matrix);
                                      matrix.getValues(matrixTest);
-                                     float postScaleX = ((overlapView.getWidth()/2) - ((defaultValue*profilePicture.getDrawable().getIntrinsicWidth())/2)) * defaultValue ;
-                                     float postScaleY = ((overlapView.getHeight()/2) - ((defaultValue*profilePicture.getDrawable().getIntrinsicHeight())/2)) *defaultValue;
+                                     float postScaleX =
+                                         ((overlapView.getWidth() / 2) - ((defaultValue * profilePicture.getDrawable().getIntrinsicWidth()) / 2)) *
+                                         defaultValue;
+                                     float postScaleY =
+                                         ((overlapView.getHeight() / 2) - ((defaultValue * profilePicture.getDrawable().getIntrinsicHeight()) / 2)) *
+                                         defaultValue;
 
-
-                                     matrix.postTranslate(postScaleX,postScaleY);
+                                     matrix.postTranslate(postScaleX, postScaleY);
                                      profilePicture.setImageMatrix(matrix);
-                                     if(initialMatrix== null){
+                                     if (initialMatrix == null)
+                                     {
                                          Matrix matrix = profilePicture.getImageMatrix();
-                                         initialMatrix= matrix;
+                                         initialMatrix = matrix;
                                      }
                                  }
                              }, 200);
@@ -269,7 +292,6 @@ public class RectCropActivity extends BaseActivity implements View.OnTouchListen
             }
         }
     }
-
 
     private String getBase64ArrayFromBitmap(Bitmap bitmap)
     {
@@ -426,7 +448,7 @@ public class RectCropActivity extends BaseActivity implements View.OnTouchListen
                     if (newDist > 5f)
                     {
                         float scale = newDist / oldDist;
-                        if(seekZoomController.getProgress() <= 99 || (scale < 1 && seekZoomController.getProgress() == 100))
+                        if (seekZoomController.getProgress() <= 99 || (scale < 1 && seekZoomController.getProgress() == 100))
                         {
                             matrix.getValues(matrixValues);
 
@@ -518,7 +540,7 @@ public class RectCropActivity extends BaseActivity implements View.OnTouchListen
     private int getProgressFromScaleValue(float scaleValue)
     {
         // int progressValue = Math.round((50 * scaleValue) - 10);
-        int progressValue = Math.round(((10 * scaleValue) - 2)*10);
+        int progressValue = Math.round(((10 * scaleValue) - 2) * 10);
         Log.e("Progress", progressValue + "");
         seekZoomController.setProgress(progressValue);
         return progressValue;

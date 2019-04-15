@@ -116,7 +116,7 @@
             android:layout_height="40dp"
             android:layout_margin="18dp"
             android:gravity="center"
-            android:background="@drawable/btn_cancel"
+            android:background="@drawable/btn_cancel_selector"
             android:padding="1dp">
 
             <LinearLayout
@@ -141,7 +141,7 @@
             android:layout_width="89dp"
             android:layout_height="40dp"
             android:layout_margin="18dp"
-            android:background="@drawable/btn_done"
+            android:background="@drawable/btn_done_selector"
             android:gravity="center">
 
             <TextView
