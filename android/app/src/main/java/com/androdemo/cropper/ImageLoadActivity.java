@@ -155,8 +155,8 @@ public class ImageLoadActivity extends BaseActivity implements View.OnTouchListe
             public void onClick(View v)
             {
 
-                //                croppedBitmap = getclip(cropImage(layCropper,profilePicture));
-                croppedBitmap = cropImage(layCropper, profilePicture);
+                croppedBitmap = getclip(cropImage(layCropper,profilePicture));
+                // croppedBitmap = cropImage(layCropper, profilePicture);
 
                 String resultBitmap;
                 if (croppedBitmap != null)

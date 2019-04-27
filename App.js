@@ -90,7 +90,7 @@ export default class App extends Component {
         <Text style={styles.instructions}>Select Image</Text>
         </TouchableOpacity>
         {this.state.avatar_image ?
-        <Image source={{ isStatic:true, uri: this.state.avatar_image }} style={{width: 150, height: 150, borderRadius: 100}}/>
+        <Image source={{ isStatic:true, uri: this.state.avatar_image }} style={{width: 150, height: 150, backgroundColor: 'yellow'}}/>
         : null}
         {this.state.profile_image ?
         <Image source={{ isStatic:true, uri: this.state.profile_image }} style={{width: 200, height: 150}}/>
